@@ -344,18 +344,32 @@
     </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
   const SUPABASE_URL = 'https://vvtunqkbwxbrkyxpfpwp.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_U_AiRZyKSw6i_xRg8FEIAw_vSpmORmc';
-  const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const SUPABASE_ANON_KEY = 'sb_publishable_U_AiRZyKSw6i_xRg8FEIAw_vSpmORmc';
 
-  function avisar(texto) {
-    document.getElementById("textoMensagem").innerText = texto;
-    document.getElementById("mensagem").style.display = "block";
-  }
-  function fecharMensagem() {
-    document.getElementById("mensagem").style.display = "none";
+  const supabaseClient = supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+  );
+
+  async function testarLumexi() {
+    const { data, error } = await supabaseClient
+      .from('listings')
+      .select('id')
+      .limit(5);
+
+    if (error) {
+      console.error('Erro na ligação:', error.message);
+      alert('Erro ao consultar a base de dados: ' + error.message);
+      return;
+    }
+
+    alert(
+      'Ligação confirmada! A LUMEXI Angola consegue consultar a base de dados.'
+    );
   }
 
-  console.log("LUMEXI conectado:", SUPABASE_URL);
-    </script>
+  testarLumexi();
+</script>
