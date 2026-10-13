@@ -341,18 +341,21 @@
     <button class="button primary" onclick="fecharMensagem()">
       Fechar
     </button>
-  </div>
+    </div>
 
-  <script>
-    function avisar(texto) {
-      document.getElementById("textoMensagem").textContent = texto;
-      document.getElementById("mensagem").style.display = "block";
-    }
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const SUPABASE_URL = 'https://vvtunqkbwxbrkyxpfpwp.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_U_AiRZyKSw6i_xRg8FEIAw_vSpmORmc';
+  const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    function fecharMensagem() {
-      document.getElementById("mensagem").style.display = "none";
-    }
-  </script>
+  function avisar(texto) {
+    document.getElementById("textoMensagem").innerText = texto;
+    document.getElementById("mensagem").style.display = "block";
+  }
+  function fecharMensagem() {
+    document.getElementById("mensagem").style.display = "none";
+  }
 
-</body>
-</html>
+  console.log("LUMEXI conectado:", SUPABASE_URL);
+    </script>
