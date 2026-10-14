@@ -3,373 +3,309 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <meta name="description" content="LUMEXI Angola: oportunidades de emprego, documentos digitais, compra e venda e publicidade para negócios.">
-
-  <meta name="theme-color" content="#10132b">
-
+  <meta name="theme-color" content="#10152b">
+  <meta name="description" content="LUMEXI Angola — oportunidades de emprego, negócios e mercado para transformar vidas.">
   <title>LUMEXI Angola | Oportunidades que transformam vidas</title>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <style>
+    :root {
+      --fundo: #10152b;
+      --painel: #191f3d;
+      --azul: #3978ff;
+      --roxo: #8155ff;
+      --texto: #ffffff;
+      --suave: #b8c0dc;
+      --verde: #39d98a;
+      --borda: rgba(255,255,255,.12);
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
 
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
-      font-family: Arial, sans-serif;
-      background: #f5f6fc;
-      color: #17182b;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--fundo);
+      color: var(--texto);
       line-height: 1.6;
     }
 
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button, input, textarea, select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
     header {
-      background: #10132b;
-      color: white;
-      padding: 20px 7%;
+      background: rgba(16,21,43,.97);
+      border-bottom: 1px solid var(--borda);
+      padding: 16px 5%;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .cabecalho {
+      max-width: 1150px;
+      margin: auto;
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      flex-wrap: wrap;
-      gap: 15px;
-    }
-
-    .logo {
-      font-size: 27px;
-      font-weight: bold;
-      letter-spacing: 2px;
-    }
-
-    .logo span {
-      color: #a78bfa;
-    }
-
-    nav {
-      display: flex;
+      justify-content: space-between;
       gap: 18px;
       flex-wrap: wrap;
     }
 
-    nav a {
-      color: white;
-      text-decoration: none;
+    .marca {
+      font-size: 25px;
+      font-weight: 900;
+      letter-spacing: 1px;
+    }
+
+    .marca span {
+      color: #6994ff;
+    }
+
+    nav {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
       font-size: 14px;
+    }
+
+    nav a:hover {
+      color: #8baaff;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: auto;
+      padding: 35px 5%;
     }
 
     .hero {
-      background: linear-gradient(135deg, #10132b, #302064, #155eaa);
-      color: white;
-      padding: 75px 7%;
+      padding: 75px 5%;
       text-align: center;
+      background:
+        radial-gradient(ellipse at top, rgba(81,91,220,.3), transparent 65%),
+        linear-gradient(135deg, #10152b, #1b1640);
     }
 
-    .hero h1 {
-      font-size: clamp(32px, 6vw, 52px);
-      line-height: 1.2;
+    .hero-conteudo {
+      max-width: 850px;
+      margin: auto;
+    }
+
+    .etiqueta {
+      display: inline-block;
+      padding: 7px 15px;
+      border: 1px solid rgba(124,151,255,.5);
+      border-radius: 30px;
+      color: #c7d4ff;
+      font-size: 13px;
       margin-bottom: 20px;
     }
 
-    .hero h1 span {
-      color: #c4b5fd;
+    h1 {
+      font-size: clamp(32px, 6vw, 55px);
+      line-height: 1.15;
+      margin-bottom: 20px;
+    }
+
+    h1 span {
+      color: #8caaff;
     }
 
     .hero p {
-      max-width: 650px;
-      margin: 0 auto 28px;
-      color: #e3e7ff;
+      color: var(--suave);
+      max-width: 700px;
+      margin: 0 auto 25px;
     }
 
-    .button {
+    .botao {
       display: inline-block;
-      padding: 13px 22px;
-      border-radius: 8px;
-      text-decoration: none;
-      font-weight: bold;
-      margin: 5px;
-      cursor: pointer;
       border: none;
-      font-size: 15px;
-    }
-
-    .primary {
-      background: #a78bfa;
-      color: #17132d;
-    }
-
-    .secondary {
-      border: 1px solid white;
+      padding: 12px 19px;
+      border-radius: 9px;
+      background: linear-gradient(100deg, var(--azul), var(--roxo));
       color: white;
+      font-weight: bold;
+      margin: 5px 3px;
     }
 
-    .section {
-      padding: 55px 7%;
+    .botao:hover {
+      opacity: .9;
     }
 
-    .section h2 {
-      text-align: center;
-      font-size: 30px;
-      margin-bottom: 12px;
+    .botao-secundario {
+      background: transparent;
+      border: 1px solid var(--borda);
     }
 
-    .intro {
-      text-align: center;
-      color: #65677c;
-      max-width: 650px;
-      margin: 0 auto 30px;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 20px;
-      margin-top: 30px;
-    }
-
-    .card {
-      background: white;
-      padding: 25px;
-      border-radius: 14px;
-      box-shadow: 0 5px 20px #16183a0d;
-      border: 1px solid #e9e9f5;
-    }
-
-    .icon {
-      font-size: 32px;
+    h2 {
+      font-size: 28px;
       margin-bottom: 10px;
     }
 
-    .card h3 {
-      margin-bottom: 8px;
-      color: #29204f;
+    .subtitulo {
+      color: var(--suave);
+      margin-bottom: 25px;
     }
 
-    .card p {
-      color: #65677c;
+    .grelha {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+      margin-top: 25px;
+    }
+
+    .cartao, .painel {
+      background: var(--painel);
+      border: 1px solid var(--borda);
+      border-radius: 15px;
+      padding: 23px;
+    }
+
+    .cartao h3 {
+      margin: 10px 0;
+    }
+
+    .cartao p, .painel p {
+      color: var(--suave);
       font-size: 14px;
     }
 
-    .card button {
-      margin-top: 18px;
+    .icone {
+      font-size: 32px;
     }
 
-    .callout {
-      background: #e9e5ff;
-      text-align: center;
-      padding: 40px 7%;
+    .secao {
+      padding-top: 30px;
+      padding-bottom: 30px;
     }
 
-    .callout h2 {
+    .duas-colunas {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+      gap: 20px;
+    }
+
+    label {
+      display: block;
+      font-size: 14px;
+      margin: 13px 0 5px;
+      color: #e0e5ff;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 12px;
+      color: white;
+      background: #10162f;
+      border: 1px solid var(--borda);
+      border-radius: 8px;
+      outline: none;
+    }
+
+    input:focus, textarea:focus, select:focus {
+      border-color: #7194ff;
+    }
+
+    input::placeholder, textarea::placeholder {
+      color: #8790ad;
+    }
+
+    select option {
+      background: #10162f;
+    }
+
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    form .botao {
+      width: 100%;
+      margin: 18px 0 0;
+    }
+
+    .mensagem {
+      padding: 12px;
+      margin: 15px 0;
+      border-radius: 8px;
+      background: #252e50;
+      color: #dbe4ff;
+      overflow-wrap: anywhere;
+    }
+
+    .mensagem:empty {
+      display: none;
+    }
+
+    .sucesso {
+      border: 1px solid #39d98a;
+    }
+
+    .erro {
+      border: 1px solid #ff7777;
+    }
+
+    .anuncio {
+      background: #111831;
+      border: 1px solid var(--borda);
+      padding: 18px;
+      border-radius: 12px;
+    }
+
+    .anuncio h3 {
+      margin-bottom: 8px;
+    }
+
+    .anuncio p {
+      color: var(--suave);
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      margin: 8px 0;
+    }
+
+    .categoria {
+      display: inline-block;
+      background: #293969;
+      color: #dce5ff;
+      border-radius: 20px;
+      padding: 4px 10px;
+      font-size: 12px;
       margin-bottom: 10px;
     }
 
-    footer {
-      background: #10132b;
-      color: #d9daf0;
-      text-align: center;
-      padding: 28px 7%;
-      font-size: 13px;
+    .oculto {
+      display: none !important;
     }
 
-    footer p {
-      margin: 6px 0;
+    .conta-status {
+      overflow-wrap: anywhere;
+      margin-bottom: 12px;
     }
 
-    #mensagem {
-      display: none;
-      position: fixed;
-      left: 5%;
-      right: 5%;
-      bottom: 20px;
-      max-width: 500px;
-      margin: auto;
-      padding: 20px;
-      border-radius: 12px;
-      background: white;
-      color: #17182b;
-      box-shadow: 0 5px 30px #0003;
-      z-index: 10;
-    }
-
-    #mensagem button {
+    .nota {
+      font-size: 12px;
+      color: var(--suave);
       margin-top: 12px;
     }
 
-    @media (max-width: 600px) {
-      header {
-        padding: 18px 5%;
-      }
-
-      nav {
-        gap: 12px;
-      }
-
-      .hero {
-        padding: 55px 5%;
-      }
-
-      .section {
-        padding: 40px 5%;
-      }
-    }
-  </style>
-</head>
-
-<body>
-
-  <header>
-    <div class="logo">LUME<span>XI</span></div>
-
-    <nav>
-      <a href="#inicio">Início</a>
-      <a href="#servicos">Serviços</a>
-      <a href="#negocios">Negócios</a>
-    </nav>
-  </header>
-
-  <main>
-    <section class="hero" id="inicio">
-      <h1>Oportunidades que <span>transformam vidas.</span></h1>
-
-      <p>
-        Descobre oportunidades de emprego, cria documentos,
-        divulga o teu negócio e encontra produtos e serviços
-        num só lugar.
-      </p>
-
-      <a class="button primary" href="#servicos">
-        Explorar oportunidades
-      </a>
-
-      <a class="button secondary" href="#negocios">
-        Divulgar o meu negócio
-      </a>
-    </section>
-
-    <section class="section" id="servicos">
-      <h2>O que procuras hoje?</h2>
-
-      <p class="intro">
-        A LUMEXI Angola pretende aproximar pessoas,
-        oportunidades e negócios.
-      </p>
-
-      <div class="grid">
-
-        <article class="card">
-          <div class="icon">💼</div>
-          <h3>Emprego</h3>
-          <p>
-            Descobre oportunidades profissionais e prepara-te
-            para novas experiências de trabalho.
-          </p>
-          <button class="button primary"
-            onclick="avisar('A área de empregos será implementada na próxima etapa.')">
-            Ver oportunidades
-          </button>
-        </article>
-
-        <article class="card">
-          <div class="icon">📄</div>
-          <h3>Documentos digitais</h3>
-          <p>
-            Prepara currículos, cartas de candidatura
-            e outros documentos profissionais.
-          </p>
-          <button class="button primary"
-            onclick="avisar('O serviço de criação de documentos será implementado na próxima etapa.')">
-            Criar documento
-          </button>
-        </article>
-
-        <article class="card">
-          <div class="icon">🛒</div>
-          <h3>Compra e venda</h3>
-          <p>
-            Encontra produtos e serviços ou prepara-te
-            para divulgar os teus próprios anúncios.
-          </p>
-          <button class="button primary"
-            onclick="avisar('O mercado de compra e venda será implementado na próxima etapa.')">
-            Explorar mercado
-          </button>
-        </article>
-
-        <article class="card">
-          <div class="icon">📢</div>
-          <h3>Publicidade</h3>
-          <p>
-            Dá visibilidade à tua empresa, loja ou
-            pequeno negócio.
-          </p>
-          <button class="button primary"
-            onclick="avisar('O sistema de publicidade comercial será implementado na próxima etapa.')">
-            Divulgar negócio
-          </button>
-        </article>
-
-      </div>
-    </section>
-
-    <section class="callout" id="negocios">
-      <h2>O teu negócio merece crescer.</h2>
-
-      <p>
-        Estamos a preparar um espaço para aproximar
-        comerciantes, clientes e empreendedores.
-      </p>
-
-      <button class="button primary"
-        onclick="avisar('O registo de empresas e a publicação de anúncios ainda estão em desenvolvimento.')">
-        Quero participar
-      </button>
-    </section>
-  </main>
-
-  <footer>
-    <div class="logo">LUME<span>XI</span> ANGOLA</div>
-
-    <p>Oportunidades que transformam vidas.</p>
-
-    <p>© 2026 LUMEXI Angola. Todos os direitos reservados.</p>
-
-    <p>Plataforma em desenvolvimento.</p>
-  </footer>
-
-  <div id="mensagem" role="status" aria-live="polite">
-    <p id="textoMensagem"></p>
-    <button class="button primary" onclick="fecharMensagem()">
-      Fechar
-    </button>
-    </div>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<script>
-  const SUPABASE_URL = 'https://vvtunqkbwxbrkyxpfpwp.supabase.co';
-  const SUPABASE_ANON_KEY = 'sb_publishable_U_AiRZyKSw6i_xRg8FEIAw_vSpmORmc';
-
-  const supabaseClient = supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_ANON_KEY
-  );
-
-  async function testarLumexi() {
-    const { data, error } = await supabaseClient
-      .from('listings')
-      .select('id')
-      .limit(5);
-
-    if (error) {
-      console.error('Erro na ligação:', error.message);
-      alert('Erro ao consultar a base de dados: ' + error.message);
-      return;
-    }
-
-    alert(
-      'Ligação confirmada! A LUMEXI Angola consegue consultar a base de dados.'
-    );
-  }
-
-  testarLumexi();
-</script>
+    footer {
+     
