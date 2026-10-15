@@ -1,2 +1,232 @@
 <!DOCTYPE html>
-<html lang="pt"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Admin LUMEXI</title><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><style>body{font-family:Arial;background:#10152b;color:#fff;margin:0;padding:20px}.container{max-width:1000px;margin:auto}.painel{background:#191f3d;border:1px solid rgba(255,255,255,.12);border-radius:15px;padding:20px;margin:15px 0}.grelha{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:15px}.contador{background:#111831;padding:20px;border-radius:12px;text-align:center;border:1px solid rgba(255,255,255,.12)}.contador h2{font-size:36px;margin:0;color:#8caaff}button{border:none;padding:10px 14px;border-radius:8px;font-weight:bold;cursor:pointer;margin:3px}.ba{background:#39d98a;color:#000}.br{background:#ff7777;color:#fff}.be{background:transparent;border:1px solid #ff7777;color:#ff7777}.anuncio{background:#111831;border:1px solid rgba(255,255,255,.12);padding:15px;border-radius:12px;margin:10px 0}input{width:100%;padding:12px;background:#10162f;border:1px solid rgba(255,255,255,.12);border-radius:8px;color:white;margin:5px 0}.oculto{display:none!important}</style></head><body><div class="container"><h1>🔐 Admin LUMEXI Angola</h1><div id="loginAdmin" class="painel"><h3>Entrar como Admin</h3><input id="emailAdmin" type="email" placeholder="teu email"><input id="senhaAdmin" type="password" placeholder="palavra-passe"><button style="background:linear-gradient(100deg,#3978ff,#8155ff);color:white;width:100%;margin-top:10px" onclick="loginAdmin()">Entrar</button><p id="msgLogin"></p></div><div id="areaAdmin" class="oculto"><div class="grelha"><div class="contador"><h2 id="cPendente">0</h2><p>Pendentes</p></div><div class="contador"><h2 id="cAprovado">0</h2><p>Aprovados</p></div><div class="contador"><h2 id="cRejeitado">0</h2><p>Rejeitados</p></div><div class="contador"><h2 id="cTotal">0</h2><p>Total</p></div></div><div class="painel"><h3>🕒 Anúncios Pendentes</h3><button onclick="carregarAdmin()" style="background:#293969;color:white">🔄 Atualizar</button><div id="listaPendente"></div></div><div class="painel"><button onclick="logout()" style="background:transparent;border:1px solid rgba(255,255,255,.12);color:white">Sair</button> <a href="index.html" style="color:white;border:1px solid rgba(255,255,255,.12);padding:10px;border-radius:8px;text-decoration:none">Voltar ao site</a></div></div></div><script>const URL="https://vvtunqkbwxbrkyxpfpwp.supabase.co",KEY="sb_publishable_U_AiRZyKSw6i_xRg8FEIAw_vSpmORmc",client=supabase.createClient(URL,KEY);async function loginAdmin(){const e=document.getElementById('emailAdmin').value.trim(),s=document.getElementById('senhaAdmin').value,m=document.getElementById('msgLogin');if(!e||!s){m.textContent="Preencha email e senha";return}m.textContent="A verificar...";const{data,error}=await client.auth.signInWithPassword({email:e,password:s});if(error){m.textContent="Erro: "+error.message;return}document.getElementById('loginAdmin').classList.add('oculto');document.getElementById('areaAdmin').classList.remove('oculto');carregarAdmin()}async function carregarAdmin(){const{data,error}=await client.from('listings').select('*').order('created_at',{ascending:false});if(error){alert(error.message);return}document.getElementById('cPendente').textContent=data.filter(a=>a.status==='pending').length;document.getElementById('cAprovado').textContent=data.filter(a=>a.status==='approved').length;document.getElementById('cRejeitado').textContent=data.filter(a=>a.status==='rejected').length;document.getElementById('cTotal').textContent=data.length;const l=document.getElementById('listaPendente');l.innerHTML="";const pend=data.filter(a=>a.status==='pending');if(!pend.length){l.innerHTML="<p>Nenhum pendente 🎉</p>";return}pend.forEach(an=>{const d=document.createElement('div');d.className='anuncio';d.innerHTML=`<h3>${an.title}</h3><p>${an.description}</p><small>${an.category||''} | ${an.location||''}</small><br><button class=ba onclick="upd('${an.id}','approved')">✅ Aprovar</button><button class=br onclick="upd('${an.id}','rejected')">❌ Rejeitar</button><button class=be onclick="del('${an.id}')">🗑️ Eliminar</button>`;l.appendChild(d)})}async function upd(id,st){if(!confirm(st+"?"))return;const{error}=await client.from('listings').update({status:st}).eq('id',id);if(error)alert(error.message);else carregarAdmin()}async function del(id){if(!confirm("Eliminar?"))return;const{error}=await client.from('listings').delete().eq('id',id);if(error)alert(error.message);else carregarAdmin()}async function logout(){await client.auth.signOut();location.reload()}client.auth.getSession().then(({data})=>{if(data.session?.user){document.getElementById('loginAdmin').classList.add('oculto');document.getElementById('areaAdmin').classList.remove('oculto');carregarAdmin()}});</script></body></html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#10152b">
+<title>Administração | LUMEXI Angola</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--bg:#10152b;--panel:#191f3d;--blue:#3978ff;--purple:#8155ff;--text:#fff;--muted:#b8c0dc;--border:#ffffff20;--green:#39d98a;--red:#ff7777}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:16px Arial,sans-serif;line-height:1.5}
+header{padding:20px 5%;background:#151b35;border-bottom:1px solid var(--border)}
+header h1{margin:0;font-size:24px}
+header p{color:var(--muted);margin:5px 0 0}
+main{max-width:1100px;margin:auto;padding:25px 5%}
+.panel{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:20px}
+h2{margin-top:0}
+label{display:block;margin:12px 0 5px}
+input{width:100%;padding:12px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:white}
+button{border:0;border-radius:8px;padding:11px 15px;margin:5px 3px 5px 0;background:linear-gradient(100deg,var(--blue),var(--purple));color:white;font-weight:bold;cursor:pointer}
+button:disabled{opacity:.5;cursor:wait}
+.secondary{background:#303858}
+.approve{background:#137c53}
+.reject{background:#984343}
+.delete{background:#812d3b}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:20px 0}
+.card{background:var(--panel);border:1px solid var(--border);padding:18px;border-radius:12px}
+.card strong{display:block;font-size:28px}
+.card span{color:var(--muted)}
+.listing{background:#111831;border:1px solid var(--border);border-radius:12px;padding:16px;margin:12px 0;overflow-wrap:anywhere}
+.listing p{white-space:pre-wrap;color:var(--muted)}
+.badge{display:inline-block;background:#293969;padding:4px 9px;border-radius:20px;font-size:12px}
+.message{padding:12px;border-radius:8px;background:#252e50;margin:12px 0;overflow-wrap:anywhere}
+.error{border:1px solid var(--red)}
+.success{border:1px solid var(--green)}
+.hidden{display:none!important}
+small{color:var(--muted)}
+a{color:#9db8ff}
+@media(max-width:500px){header h1{font-size:21px}.panel{padding:15px}}
+</style>
+</head>
+<body>
+<header>
+  <h1>🔐 LUMEXI Angola</h1>
+  <p>Painel exclusivo de administração</p>
+</header>
+
+<main>
+  <div id="message" class="message" role="status">A verificar ligação...</div>
+
+  <section id="login" class="panel hidden">
+    <h2>Iniciar sessão de administrador</h2>
+    <p>Entra com a conta autorizada para administrar a LUMEXI.</p>
+    <form id="loginForm">
+      <label for="email">E-mail</label>
+      <input id="email" type="email" autocomplete="username" required>
+      <label for="password">Palavra-passe</label>
+      <input id="password" type="password" autocomplete="current-password" required>
+      <button id="loginButton" type="submit">Entrar</button>
+    </form>
+    <small>O acesso só será concedido se a conta estiver autorizada na tabela admins do Supabase.</small>
+  </section>
+
+  <section id="dashboard" class="hidden">
+    <div class="panel">
+      <h2>Área administrativa</h2>
+      <p id="who"></p>
+      <button id="refresh" type="button">Atualizar anúncios</button>
+      <button id="logout" class="secondary" type="button">Terminar sessão</button>
+    </div>
+
+    <div class="cards">
+      <div class="card"><strong id="pendingCount">0</strong><span>Pendentes</span></div>
+      <div class="card"><strong id="approvedCount">0</strong><span>Aprovados</span></div>
+      <div class="card"><strong id="rejectedCount">0</strong><span>Rejeitados</span></div>
+    </div>
+
+    <section class="panel">
+      <h2>Anúncios pendentes</h2>
+      <div id="pendingList">A carregar...</div>
+    </section>
+
+    <section class="panel">
+      <h2>Anúncios aprovados</h2>
+      <div id="approvedList">A carregar...</div>
+    </section>
+
+    <section class="panel">
+      <h2>Anúncios rejeitados</h2>
+      <div id="rejectedList">A carregar...</div>
+    </section>
+  </section>
+</main>
+
+<script>
+(() => {
+  "use strict";
+
+  const SUPABASE_URL = "https://vvtunqkbwxbrkyxpfpwp.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_U_AiRZyKSw6i_xRg8FEIAw_vSpmORmc";
+  const ADMIN_EMAIL = "lumessidaniel@gmail.com";
+
+  const $ = id => document.getElementById(id);
+  const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  let currentUser = null;
+  let busy = false;
+
+  function message(text, type = "") {
+    $("message").textContent = text;
+    $("message").className = "message" + (type ? " " + type : "");
+  }
+
+  function escapeHTML(value) {
+    return String(value ?? "").replace(/[&<>"']/g, c => ({
+      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+    })[c]);
+  }
+
+  function categoryName(value) {
+    return ({emprego:"Emprego",mercado:"Compra e venda",negocio:"Negócios"})[value] || "Oportunidade";
+  }
+
+  function showLogin() {
+    $("login").classList.remove("hidden");
+    $("dashboard").classList.add("hidden");
+  }
+
+  function showDashboard() {
+    $("login").classList.add("hidden");
+    $("dashboard").classList.remove("hidden");
+    $("who").textContent = "Administrador: " + currentUser.email;
+  }
+
+  async function verifyAdmin(user) {
+    if (!user || user.email?.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
+      return false;
+    }
+
+    const {data, error} = await client
+      .from("admins")
+      .select("user_id")
+      .eq("user_id", user.id)
+      .maybeSingle();
+
+    if (error) {
+      console.error(error);
+      message("Não foi possível verificar a autorização. Confirma a tabela admins e as permissões no Supabase.", "error");
+      return false;
+    }
+
+    return Boolean(data);
+  }
+
+  function renderListing(item) {
+    const div = document.createElement("article");
+    div.className = "listing";
+    div.innerHTML = `
+      <span class="badge">${escapeHTML(categoryName(item.category))}</span>
+      <h3>${escapeHTML(item.title)}</h3>
+      <p>${escapeHTML(item.description)}</p>
+      <p><strong>Localização:</strong> ${escapeHTML(item.location || "Não indicada")}</p>
+      <small>Publicado: ${escapeHTML(item.created_at ? new Date(item.created_at).toLocaleString("pt-PT") : "Data indisponível")}</small>
+      <div class="actions"></div>`;
+
+    const actions = div.querySelector(".actions");
+
+    if (item.status === "pending") {
+      const approve = document.createElement("button");
+      approve.className = "approve";
+      approve.textContent = "Aprovar";
+      approve.onclick = () => changeStatus(item.id, "approved");
+
+      const reject = document.createElement("button");
+      reject.className = "reject";
+      reject.textContent = "Rejeitar";
+      reject.onclick = () => changeStatus(item.id, "rejected");
+
+      actions.append(approve, reject);
+    }
+
+    const remove = document.createElement("button");
+    remove.className = "delete";
+    remove.textContent = "Eliminar";
+    remove.onclick = () => deleteListing(item.id);
+    actions.appendChild(remove);
+
+    return div;
+  }
+
+  async function loadListings() {
+    if (busy) return;
+    busy = true;
+    message("A carregar anúncios...");
+
+    try {
+      const {data, error} = await client
+        .from("listings")
+        .select("id,title,description,category,location,status,created_at")
+        .order("created_at", {ascending:false})
+        .limit(200);
+
+      if (error) throw error;
+
+      const items = data || [];
+      const pending = items.filter(x => x.status === "pending");
+      const approved = items.filter(x => x.status === "approved");
+      const rejected = items.filter(x => x.status === "rejected");
+
+      $("pendingCount").textContent = pending.length;
+      $("approvedCount").textContent = approved.length;
+      $("rejectedCount").textContent = rejected.length;
+
+      for (const [id, list] of [
+        ["pendingList", pending],
+        ["approvedList", approved],
+        ["rejectedList", rejected]
+      ]) {
+        const container = $(id);
+        container.replaceChildren();
+
+        if (!list.length) {
+          container.textContent = "Não existem anúncios nesta categoria.";
+        } else {
+          for (const item of list) container.appendChild(renderListing(item));
+        }
+      }
+
+      message("Anúncios carregados com sucesso.", "success");
+    } catch (error) {
+      console.error(error);
+      message("Não foi possível carregar os anúncios. Confirma as políticas de SELECT da
