@@ -5,75 +5,269 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#10152b">
 <title>Administração | LUMEXI Angola</title>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
-:root{--bg:#10152b;--panel:#191f3d;--blue:#3978ff;--purple:#8155ff;--text:#fff;--muted:#b8c0dc;--border:#ffffff20;--green:#39d98a;--red:#ff7777}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font:16px Arial,sans-serif;line-height:1.5}
-header{padding:20px 5%;background:#151b35;border-bottom:1px solid var(--border)}
-header h1{margin:0;font-size:24px}
-header p{color:var(--muted);margin:5px 0 0}
-main{max-width:1100px;margin:auto;padding:25px 5%}
-.panel{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:20px}
-h2{margin-top:0}
-label{display:block;margin:12px 0 5px}
-input{width:100%;padding:12px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:white}
-button{border:0;border-radius:8px;padding:11px 15px;margin:5px 3px 5px 0;background:linear-gradient(100deg,var(--blue),var(--purple));color:white;font-weight:bold;cursor:pointer}
-button:disabled{opacity:.5;cursor:wait}
-.secondary{background:#303858}
-.approve{background:#137c53}
-.reject{background:#984343}
-.delete{background:#812d3b}
-.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:20px 0}
-.card{background:var(--panel);border:1px solid var(--border);padding:18px;border-radius:12px}
-.card strong{display:block;font-size:28px}
-.card span{color:var(--muted)}
-.listing{background:#111831;border:1px solid var(--border);border-radius:12px;padding:16px;margin:12px 0;overflow-wrap:anywhere}
-.listing p{white-space:pre-wrap;color:var(--muted)}
-.badge{display:inline-block;background:#293969;padding:4px 9px;border-radius:20px;font-size:12px}
-.message{padding:12px;border-radius:8px;background:#252e50;margin:12px 0;overflow-wrap:anywhere}
-.error{border:1px solid var(--red)}
-.success{border:1px solid var(--green)}
-.hidden{display:none!important}
-small{color:var(--muted)}
-a{color:#9db8ff}
-@media(max-width:500px){header h1{font-size:21px}.panel{padding:15px}}
+:root {
+  --bg: #10152b;
+  --panel: #191f3d;
+  --blue: #3978ff;
+  --purple: #8155ff;
+  --text: #ffffff;
+  --muted: #b8c0dc;
+  --border: #ffffff20;
+  --green: #39d98a;
+  --red: #ff7777;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 16px Arial, sans-serif;
+  line-height: 1.5;
+}
+
+header {
+  padding: 20px 5%;
+  background: #151b35;
+  border-bottom: 1px solid var(--border);
+}
+
+header h1 {
+  margin: 0;
+  font-size: 24px;
+}
+
+header p {
+  color: var(--muted);
+  margin: 5px 0 0;
+}
+
+main {
+  max-width: 1100px;
+  margin: auto;
+  padding: 25px 5%;
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+h2 {
+  margin-top: 0;
+}
+
+label {
+  display: block;
+  margin: 12px 0 5px;
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: white;
+}
+
+button {
+  border: 0;
+  border-radius: 8px;
+  padding: 11px 15px;
+  margin: 5px 3px 5px 0;
+  background: linear-gradient(100deg, var(--blue), var(--purple));
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: .5;
+  cursor: wait;
+}
+
+.secondary {
+  background: #303858;
+}
+
+.approve {
+  background: #137c53;
+}
+
+.reject {
+  background: #984343;
+}
+
+.delete {
+  background: #812d3b;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  margin: 20px 0;
+}
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  padding: 18px;
+  border-radius: 12px;
+}
+
+.card strong {
+  display: block;
+  font-size: 28px;
+}
+
+.card span {
+  color: var(--muted);
+}
+
+.listing {
+  background: #111831;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  margin: 12px 0;
+  overflow-wrap: anywhere;
+}
+
+.listing p {
+  white-space: pre-wrap;
+  color: var(--muted);
+}
+
+.badge {
+  display: inline-block;
+  background: #293969;
+  padding: 4px 9px;
+  border-radius: 20px;
+  font-size: 12px;
+}
+
+.message {
+  padding: 12px;
+  border-radius: 8px;
+  background: #252e50;
+  margin: 12px 0;
+  overflow-wrap: anywhere;
+}
+
+.error {
+  border: 1px solid var(--red);
+}
+
+.success {
+  border: 1px solid var(--green);
+}
+
+.hidden {
+  display: none !important;
+}
+
+small {
+  color: var(--muted);
+}
+
+@media (max-width: 500px) {
+  header h1 {
+    font-size: 21px;
+  }
+
+  .panel {
+    padding: 15px;
+  }
+}
 </style>
 </head>
+
 <body>
+
 <header>
   <h1>🔐 LUMEXI Angola</h1>
   <p>Painel exclusivo de administração</p>
 </header>
 
 <main>
-  <div id="message" class="message" role="status">A verificar ligação...</div>
+
+  <div id="message" class="message" role="status" aria-live="polite">
+    A iniciar o painel...
+  </div>
 
   <section id="login" class="panel hidden">
     <h2>Iniciar sessão de administrador</h2>
     <p>Entra com a conta autorizada para administrar a LUMEXI.</p>
+
     <form id="loginForm">
       <label for="email">E-mail</label>
-      <input id="email" type="email" autocomplete="username" required>
+      <input
+        id="email"
+        type="email"
+        autocomplete="username"
+        required
+      >
+
       <label for="password">Palavra-passe</label>
-      <input id="password" type="password" autocomplete="current-password" required>
-      <button id="loginButton" type="submit">Entrar</button>
+      <input
+        id="password"
+        type="password"
+        autocomplete="current-password"
+        required
+      >
+
+      <button id="loginButton" type="submit">
+        Entrar
+      </button>
     </form>
-    <small>O acesso só será concedido se a conta estiver autorizada na tabela admins do Supabase.</small>
+
+    <small>
+      Só as contas autorizadas na tabela admins podem administrar a plataforma.
+    </small>
   </section>
 
   <section id="dashboard" class="hidden">
+
     <div class="panel">
       <h2>Área administrativa</h2>
       <p id="who"></p>
-      <button id="refresh" type="button">Atualizar anúncios</button>
-      <button id="logout" class="secondary" type="button">Terminar sessão</button>
+
+      <button id="refresh" type="button">
+        Atualizar anúncios
+      </button>
+
+      <button id="logout" class="secondary" type="button">
+        Terminar sessão
+      </button>
     </div>
 
     <div class="cards">
-      <div class="card"><strong id="pendingCount">0</strong><span>Pendentes</span></div>
-      <div class="card"><strong id="approvedCount">0</strong><span>Aprovados</span></div>
-      <div class="card"><strong id="rejectedCount">0</strong><span>Rejeitados</span></div>
+      <div class="card">
+        <strong id="pendingCount">0</strong>
+        <span>Pendentes</span>
+      </div>
+
+      <div class="card">
+        <strong id="approvedCount">0</strong>
+        <span>Aprovados</span>
+      </div>
+
+      <div class="card">
+        <strong id="rejectedCount">0</strong>
+        <span>Rejeitados</span>
+      </div>
     </div>
 
     <section class="panel">
@@ -90,6 +284,7 @@ a{color:#9db8ff}
       <h2>Anúncios rejeitados</h2>
       <div id="rejectedList">A carregar...</div>
     </section>
+
   </section>
 </main>
 
@@ -97,28 +292,35 @@ a{color:#9db8ff}
 (() => {
   "use strict";
 
-  const SUPABASE_URL = "https://vvtunqkbwxbrkyxpfpwp.supabase.co";
-  const SUPABASE_KEY = "sb_publishable_U_AiRZyKSw6i_xRg8FEIAw_vSpmORmc";
+  const SUPABASE_URL =
+    "https://vvtunqkbwxbrkyxpfpwp.supabase.co";
+
+  const SUPABASE_KEY =
+    "sb_publishable_U_AiRZyKSw6i_xRg8FEIAw_vSpmORmc";
+
   const ADMIN_EMAIL = "lumessidaniel@gmail.com";
 
   const $ = id => document.getElementById(id);
-  const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  if (!window.supabase) {
+    $("message").textContent =
+      "Não foi possível carregar o serviço de ligação. Verifica a Internet e atualiza a página.";
+    $("message").className = "message error";
+    return;
+  }
+
+  const client = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
   let currentUser = null;
   let busy = false;
 
-  function message(text, type = "") {
+  function showMessage(text, type = "") {
     $("message").textContent = text;
-    $("message").className = "message" + (type ? " " + type : "");
-  }
-
-  function escapeHTML(value) {
-    return String(value ?? "").replace(/[&<>"']/g, c => ({
-      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
-    })[c]);
-  }
-
-  function categoryName(value) {
-    return ({emprego:"Emprego",mercado:"Compra e venda",negocio:"Negócios"})[value] || "Oportunidade";
+    $("message").className =
+      "message" + (type ? " " + type : "");
   }
 
   function showLogin() {
@@ -129,24 +331,48 @@ a{color:#9db8ff}
   function showDashboard() {
     $("login").classList.add("hidden");
     $("dashboard").classList.remove("hidden");
-    $("who").textContent = "Administrador: " + currentUser.email;
+
+    $("who").textContent =
+      "Administrador: " + currentUser.email;
+  }
+
+  function escapeHTML(value) {
+    return String(value ?? "").replace(/[&<>"']/g, c => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#039;"
+    })[c]);
+  }
+
+  function categoryName(value) {
+    return ({
+      emprego: "Emprego",
+      mercado: "Compra e venda",
+      negocio: "Negócios"
+    })[value] || "Oportunidade";
   }
 
   async function verifyAdmin(user) {
-    if (!user || user.email?.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
+    if (
+      !user ||
+      user.email?.toLowerCase() !== ADMIN_EMAIL.toLowerCase()
+    ) {
       return false;
     }
 
-    const {data, error} = await client
+    const { data, error } = await client
       .from("admins")
       .select("user_id")
       .eq("user_id", user.id)
       .maybeSingle();
 
     if (error) {
-      console.error(error);
-      message("Não foi possível verificar a autorização. Confirma a tabela admins e as permissões no Supabase.", "error");
-      return false;
+      console.error("Erro ao verificar administrador:", error);
+      throw new Error(
+        "Não foi possível consultar a tabela admins. Verifica as permissões no Supabase."
+      );
     }
 
     return Boolean(data);
@@ -155,13 +381,23 @@ a{color:#9db8ff}
   function renderListing(item) {
     const div = document.createElement("article");
     div.className = "listing";
+
     div.innerHTML = `
       <span class="badge">${escapeHTML(categoryName(item.category))}</span>
       <h3>${escapeHTML(item.title)}</h3>
       <p>${escapeHTML(item.description)}</p>
-      <p><strong>Localização:</strong> ${escapeHTML(item.location || "Não indicada")}</p>
-      <small>Publicado: ${escapeHTML(item.created_at ? new Date(item.created_at).toLocaleString("pt-PT") : "Data indisponível")}</small>
-      <div class="actions"></div>`;
+      <p><strong>Localização:</strong>
+        ${escapeHTML(item.location || "Não indicada")}
+      </p>
+      <small>Publicado:
+        ${escapeHTML(
+          item.created_at
+            ? new Date(item.created_at).toLocaleString("pt-PT")
+            : "Data indisponível"
+        )}
+      </small>
+      <div class="actions"></div>
+    `;
 
     const actions = div.querySelector(".actions");
 
@@ -183,6 +419,7 @@ a{color:#9db8ff}
     remove.className = "delete";
     remove.textContent = "Eliminar";
     remove.onclick = () => deleteListing(item.id);
+
     actions.appendChild(remove);
 
     return div;
@@ -190,43 +427,294 @@ a{color:#9db8ff}
 
   async function loadListings() {
     if (busy) return;
+
     busy = true;
-    message("A carregar anúncios...");
+    $("refresh").disabled = true;
+
+    showMessage("A carregar anúncios...");
 
     try {
-      const {data, error} = await client
+      const { data, error } = await client
         .from("listings")
-        .select("id,title,description,category,location,status,created_at")
-        .order("created_at", {ascending:false})
+        .select(
+          "id,title,description,category,location,status,created_at"
+        )
+        .order("created_at", { ascending: false })
         .limit(200);
 
       if (error) throw error;
 
       const items = data || [];
-      const pending = items.filter(x => x.status === "pending");
-      const approved = items.filter(x => x.status === "approved");
-      const rejected = items.filter(x => x.status === "rejected");
+
+      const pending = items.filter(
+        item => item.status === "pending"
+      );
+
+      const approved = items.filter(
+        item => item.status === "approved"
+      );
+
+      const rejected = items.filter(
+        item => item.status === "rejected"
+      );
 
       $("pendingCount").textContent = pending.length;
       $("approvedCount").textContent = approved.length;
       $("rejectedCount").textContent = rejected.length;
 
-      for (const [id, list] of [
+      const lists = [
         ["pendingList", pending],
         ["approvedList", approved],
         ["rejectedList", rejected]
-      ]) {
+      ];
+
+      for (const [id, list] of lists) {
         const container = $(id);
         container.replaceChildren();
 
         if (!list.length) {
-          container.textContent = "Não existem anúncios nesta categoria.";
+          container.textContent =
+            "Não existem anúncios nesta categoria.";
         } else {
-          for (const item of list) container.appendChild(renderListing(item));
+          for (const item of list) {
+            container.appendChild(renderListing(item));
+          }
         }
       }
 
-      message("Anúncios carregados com sucesso.", "success");
+      showMessage("Anúncios carregados com sucesso.", "success");
+
     } catch (error) {
-      console.error(error);
-      message("Não foi possível carregar os anúncios. Confirma as políticas de SELECT da
+      console.error("Erro ao carregar anúncios:", error);
+
+      showMessage(
+        "Não foi possível carregar os anúncios. " +
+        (error.message || "Verifica as permissões de leitura da tabela listings."),
+        "error"
+      );
+
+    } finally {
+      busy = false;
+      $("refresh").disabled = false;
+    }
+  }
+
+  async function changeStatus(id, status) {
+    if (!currentUser) {
+      showMessage("Inicia sessão para continuar.", "error");
+      return;
+    }
+
+    const action = status === "approved" ? "aprovar" : "rejeitar";
+
+    if (!confirm("Tens a certeza de que pretendes " + action + " este anúncio?")) {
+      return;
+    }
+
+    showMessage("A atualizar o anúncio...");
+
+    try {
+      const { data, error } = await client
+        .from("listings")
+        .update({ status })
+        .eq("id", id)
+        .select("id");
+
+      if (error) throw error;
+
+      if (!data || data.length === 0) {
+        throw new Error(
+          "Nenhum anúncio foi atualizado. Verifica as permissões de administrador."
+        );
+      }
+
+      showMessage("Estado do anúncio atualizado.", "success");
+      await loadListings();
+
+    } catch (error) {
+      console.error("Erro ao atualizar anúncio:", error);
+
+      showMessage(
+        "Não foi possível atualizar o anúncio. " +
+        (error.message || "Verifica as permissões no Supabase."),
+        "error"
+      );
+    }
+  }
+
+  async function deleteListing(id) {
+    if (!currentUser) {
+      showMessage("Inicia sessão para continuar.", "error");
+      return;
+    }
+
+    if (!confirm("Tens a certeza de que pretendes eliminar este anúncio? Esta ação não pode ser desfeita.")) {
+      return;
+    }
+
+    showMessage("A eliminar o anúncio...");
+
+    try {
+      const { data, error } = await client
+        .from("listings")
+        .delete()
+        .eq("id", id)
+        .select("id");
+
+      if (error) throw error;
+
+      if (!data || data.length === 0) {
+        throw new Error(
+          "Nenhum anúncio foi eliminado. Verifica as permissões de administrador."
+        );
+      }
+
+      showMessage("Anúncio eliminado com sucesso.", "success");
+      await loadListings();
+
+    } catch (error) {
+      console.error("Erro ao eliminar anúncio:", error);
+
+      showMessage(
+        "Não foi possível eliminar o anúncio. " +
+        (error.message || "Verifica as permissões no Supabase."),
+        "error"
+      );
+    }
+  }
+
+  $("loginForm").addEventListener("submit", async event => {
+    event.preventDefault();
+
+    const button = $("loginButton");
+    button.disabled = true;
+    showMessage("A iniciar sessão...");
+
+    try {
+      const email = $("email").value.trim();
+      const password = $("password").value;
+
+      const { data, error } = await client.auth.signInWithPassword({
+        email,
+        password
+      });
+
+      if (error) throw error;
+
+      if (!data.user) {
+        throw new Error("Não foi possível identificar a conta.");
+      }
+
+      const authorized = await verifyAdmin(data.user);
+
+      if (!authorized) {
+        await client.auth.signOut();
+
+        showLogin();
+
+        showMessage(
+          "Esta conta não está autorizada como administradora. Confirma o e-mail e o registo na tabela admins.",
+          "error"
+        );
+
+        return;
+      }
+
+      currentUser = data.user;
+      showDashboard();
+
+      await loadListings();
+
+    } catch (error) {
+      console.error("Erro no início de sessão:", error);
+
+      showLogin();
+
+      showMessage(
+        "Não foi possível iniciar sessão. " +
+        (error.message || "Verifica o e-mail, a palavra-passe e a ligação."),
+        "error"
+      );
+
+    } finally {
+      button.disabled = false;
+    }
+  });
+
+  $("refresh").addEventListener("click", loadListings);
+
+  $("logout").addEventListener("click", async () => {
+    showMessage("A terminar sessão...");
+
+    const { error } = await client.auth.signOut();
+
+    currentUser = null;
+    $("password").value = "";
+    showLogin();
+
+    if (error) {
+      console.error("Erro ao terminar sessão:", error);
+      showMessage(
+        "A sessão foi fechada nesta página, mas ocorreu um erro ao limpar a sessão remota.",
+        "error"
+      );
+    } else {
+      showMessage("Sessão terminada com sucesso.", "success");
+    }
+  });
+
+  async function init() {
+    showMessage("A verificar ligação ao Supabase...");
+
+    try {
+      const { data, error } = await client.auth.getSession();
+
+      if (error) throw error;
+
+      const session = data.session;
+
+      if (!session) {
+        showLogin();
+        showMessage("Entra com a conta autorizada para administrar a LUMEXI.");
+        return;
+      }
+
+      const authorized = await verifyAdmin(session.user);
+
+      if (!authorized) {
+        await client.auth.signOut();
+        showLogin();
+
+        showMessage(
+          "A sessão existe, mas esta conta não está autorizada como administradora.",
+          "error"
+        );
+
+        return;
+      }
+
+      currentUser = session.user;
+      showDashboard();
+
+      await loadListings();
+
+    } catch (error) {
+      console.error("Erro ao iniciar o painel:", error);
+
+      showLogin();
+
+      showMessage(
+        "Não foi possível concluir a verificação. " +
+        (error.message || "Verifica a ligação à Internet e as configurações do Supabase."),
+        "error"
+      );
+    }
+  }
+
+  init();
+
+})();
+</script>
+
+</body>
+</html>
