@@ -1,1016 +1,799 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#090d19">
-<meta name="description" content="LUMEXI Angola: oportunidades de emprego, serviços digitais e soluções para empresas e empreendedores.">
-<title>LUMEXI Angola | Oportunidades que transformam vidas</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <title>LUMEXI Angola | Oportunidades que transformam vidas</title>
 
-<style>
-:root {
-  --fundo:#090d19;
-  --painel:#151d35;
-  --azul:#3978ff;
-  --roxo:#8155ff;
-  --dourado:#e7c477;
-  --texto:#f7f8ff;
-  --suave:#aab4ce;
-  --verde:#39d98a;
-  --borda:rgba(255,255,255,.1);
-}
-*{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;scroll-padding-top:90px}
-body{
-  background:
-  radial-gradient(ellipse at top left,rgba(57,120,255,.13),transparent 40%),
-  radial-gradient(ellipse at top right,rgba(129,85,255,.1),transparent 35%),
-  var(--fundo);
-  color:var(--texto);
-  font-family:Arial,Helvetica,sans-serif;
-  line-height:1.6
-}
-a{color:inherit;text-decoration:none}
-button,input,textarea,select{font:inherit}
-button{cursor:pointer}
-.contentor{width:min(1120px,92%);margin:auto}
-header{
-  position:sticky;top:0;z-index:100;
-  background:rgba(9,13,25,.96);
-  border-bottom:1px solid var(--borda);
-  backdrop-filter:blur(15px)
-}
-.barra{
-  min-height:75px;display:flex;align-items:center;
-  justify-content:space-between;gap:20px;
-  flex-wrap:wrap;padding:12px 0
-}
-.marca{display:flex;align-items:center;gap:10px}
-.simbolo{
-  width:45px;height:45px;display:grid;place-items:center;
-  border-radius:13px;
-  background:linear-gradient(135deg,var(--azul),var(--roxo));
-  font-size:17px;font-weight:900
-}
-.marca strong{display:block;font-size:21px;letter-spacing:1px}
-.marca small{display:block;color:var(--dourado);font-size:10px;letter-spacing:1.5px}
-nav{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
-nav a{color:var(--suave);font-size:13px;font-weight:bold}
-nav a:hover{color:var(--dourado)}
-.botao{
-  display:inline-flex;justify-content:center;align-items:center;
-  padding:12px 18px;border:0;border-radius:11px;
-  font-weight:bold;text-align:center;transition:.2s
-}
-.botao:hover{transform:translateY(-2px);filter:brightness(1.1)}
-.principal{color:white;background:linear-gradient(110deg,var(--azul),var(--roxo))}
-.dourado{color:#171323;background:linear-gradient(110deg,#f2d99b,var(--dourado))}
-.secundario{color:white;background:rgba(255,255,255,.05);border:1px solid var(--borda)}
-.hero{padding:75px 0}
-.hero-grelha{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center}
-.etiqueta{
-  display:inline-block;color:var(--dourado);
-  background:rgba(231,196,119,.07);
-  border:1px solid rgba(231,196,119,.25);
-  border-radius:30px;padding:7px 13px;
-  font-size:12px;font-weight:bold;margin-bottom:20px
-}
-h1{font-size:clamp(36px,5vw,62px);line-height:1.1;letter-spacing:-1.5px;margin-bottom:22px}
-.destaque{color:var(--dourado)}
-.hero p{color:var(--suave);font-size:16px;margin-bottom:25px}
-.acoes{display:flex;gap:12px;flex-wrap:wrap}
-.cartao-hero{
-  padding:27px;border:1px solid rgba(231,196,119,.2);
-  border-radius:24px;background:linear-gradient(145deg,#192442,#101626);
-  box-shadow:0 20px 55px rgba(0,0,0,.25)
-}
-.cartao-hero h2{font-size:23px;margin-bottom:8px}
-.cartao-hero>p{font-size:13px}
-.mini-cartao{
-  display:flex;align-items:center;gap:13px;padding:15px;
-  margin-top:12px;border:1px solid var(--borda);
-  border-radius:14px;background:rgba(255,255,255,.035)
-}
-.mini-icone{
-  width:43px;height:43px;display:grid;place-items:center;
-  border-radius:12px;background:rgba(57,120,255,.16);
-  font-size:21px;flex-shrink:0
-}
-.mini-cartao strong{display:block;font-size:14px}
-.mini-cartao small{display:block;color:var(--suave);font-size:12px}
-.secao{padding:70px 0}
-.alternada{
-  background:rgba(255,255,255,.018);
-  border-top:1px solid var(--borda);
-  border-bottom:1px solid var(--borda)
-}
-.cabecalho-secao{max-width:700px;margin:0 auto 35px;text-align:center}
-.sobretitulo{
-  color:var(--dourado);font-size:11px;letter-spacing:2px;
-  font-weight:bold;text-transform:uppercase;margin-bottom:8px
-}
-h2{font-size:clamp(27px,4vw,39px);line-height:1.2;margin-bottom:12px}
-.cabecalho-secao p{color:var(--suave)}
-.grelha{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
-.cartao{
-  padding:23px;border:1px solid var(--borda);
-  border-radius:18px;background:linear-gradient(145deg,#151d35,#101626)
-}
-.cartao h3{font-size:18px;margin:12px 0 8px}
-.cartao p{color:var(--suave);font-size:14px}
-.icone{font-size:29px}
-.formulario{
-  max-width:650px;margin:auto;padding:25px;
-  border:1px solid var(--borda);border-radius:20px;background:var(--painel)
-}
-.formulario h3{margin-bottom:15px;font-size:21px}
-.campo{margin-bottom:15px}
-.campo label{display:block;margin-bottom:6px;font-size:13px;font-weight:bold}
-input,textarea,select{
-  display:block;width:100%;padding:12px 13px;color:white;
-  background:#0c1224;border:1px solid var(--borda);
-  border-radius:10px;outline:none
-}
-input:focus,textarea:focus,select:focus{border-color:var(--azul)}
-input::placeholder,textarea::placeholder{color:#77839f}
-select option{background:#10172b;color:white}
-textarea{min-height:110px;resize:vertical}
-.largura-total{width:100%}
-.mensagem{
-  display:none;margin-top:13px;padding:12px;
-  border-radius:10px;font-size:14px;overflow-wrap:anywhere
-}
-.mensagem.sucesso{
-  display:block;color:#9af0c5;background:rgba(57,217,138,.1);
-  border:1px solid rgba(57,217,138,.25)
-}
-.mensagem.erro{
-  display:block;color:#ffb7b7;background:rgba(255,70,70,.08);
-  border:1px solid rgba(255,70,70,.2)
-}
-.lista-anuncios{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
-.anuncio{
-  padding:22px;border:1px solid var(--borda);
-  border-radius:17px;background:var(--painel);overflow-wrap:anywhere
-}
-.anuncio h3{margin-bottom:8px;font-size:18px}
-.anuncio p{color:var(--suave);font-size:14px;margin-bottom:10px;white-space:pre-wrap}
-.anuncio small{display:block;color:var(--dourado);margin-top:8px}
-.vazio{
-  grid-column:1/-1;text-align:center;padding:28px;
-  color:var(--suave);border:1px dashed var(--borda);border-radius:15px
-}
-.separador{height:1px;background:var(--borda);margin:22px 0}
-footer{padding:30px 0;border-top:1px solid var(--borda);text-align:center;color:var(--suave);font-size:13px}
-footer strong{color:var(--dourado)}
-.oculto{display:none!important}
-@media(max-width:800px){
-  .hero-grelha{grid-template-columns:1fr}
-  .grelha,.lista-anuncios{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .barra{justify-content:center}
-  nav{justify-content:center}
-}
-@media(max-width:520px){
-  .grelha,.lista-anuncios{grid-template-columns:1fr}
-  .hero{padding:48px 0}
-  .secao{padding:48px 0}
-  .formulario{padding:18px}
-}
-</style>
+  <meta
+    name="description"
+    content="LUMEXI Angola: oportunidades de emprego, serviços digitais, anúncios e soluções para negócios."
+  >
+
+  <meta name="theme-color" content="#10152b">
+
+  <style>
+    :root {
+      --fundo: #10152b;
+      --painel: #191f3d;
+      --painel2: #202849;
+      --azul: #3978ff;
+      --roxo: #8155ff;
+      --verde: #39d98a;
+      --branco: #ffffff;
+      --cinza: #b9c1d9;
+      --vermelho: #ff647c;
+      --borda: rgba(255,255,255,.12);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--fundo);
+      color: var(--branco);
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.6;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button, input, textarea, select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+    }
+
+    .container {
+      width: min(1120px, 92%);
+      margin: auto;
+    }
+
+    header {
+      background: rgba(16,21,43,.96);
+      border-bottom: 1px solid var(--borda);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(12px);
+    }
+
+    .navbar {
+      min-height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      flex-wrap: wrap;
+      padding: 12px 0;
+    }
+
+    .logo {
+      font-size: 27px;
+      font-weight: 900;
+      letter-spacing: -1px;
+    }
+
+    .logo span {
+      color: var(--azul);
+    }
+
+    .logo small {
+      display: block;
+      font-size: 10px;
+      color: var(--cinza);
+      letter-spacing: 2px;
+      font-weight: 500;
+    }
+
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      align-items: center;
+    }
+
+    nav a {
+      color: var(--cinza);
+      font-size: 14px;
+    }
+
+    nav a:hover {
+      color: var(--branco);
+    }
+
+    .botao {
+      border: 0;
+      border-radius: 10px;
+      padding: 12px 18px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-weight: 700;
+      transition: .2s;
+    }
+
+    .botao:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.1);
+    }
+
+    .botao-azul {
+      background: linear-gradient(110deg, var(--azul), var(--roxo));
+      color: white;
+    }
+
+    .botao-verde {
+      background: var(--verde);
+      color: #10152b;
+    }
+
+    .botao-secundario {
+      background: var(--painel2);
+      color: white;
+      border: 1px solid var(--borda);
+    }
+
+    .botao-perigo {
+      background: #642b43;
+      color: white;
+    }
+
+    .pequeno {
+      padding: 8px 12px;
+      font-size: 13px;
+    }
+
+    .hero {
+      padding: 75px 0;
+      background:
+        radial-gradient(circle at 85% 15%, rgba(129,85,255,.2), transparent 30%),
+        radial-gradient(circle at 10% 50%, rgba(57,120,255,.16), transparent 35%);
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 40px;
+      align-items: center;
+    }
+
+    .etiqueta {
+      display: inline-block;
+      padding: 7px 12px;
+      border: 1px solid rgba(129,85,255,.5);
+      border-radius: 30px;
+      color: #cbbaff;
+      font-size: 13px;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      font-size: clamp(34px, 5vw, 58px);
+      line-height: 1.12;
+      margin-bottom: 20px;
+    }
+
+    h1 span {
+      color: #8c9fff;
+    }
+
+    .hero p {
+      color: var(--cinza);
+      font-size: 17px;
+      max-width: 620px;
+      margin-bottom: 25px;
+    }
+
+    .hero-botoes {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .hero-cartao {
+      background: linear-gradient(145deg, var(--painel), #25274b);
+      border: 1px solid var(--borda);
+      border-radius: 24px;
+      padding: 28px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.18);
+    }
+
+    .hero-cartao h2 {
+      margin-bottom: 15px;
+      font-size: 22px;
+    }
+
+    .destaque {
+      padding: 15px;
+      border-radius: 12px;
+      background: rgba(57,120,255,.12);
+      border: 1px solid rgba(57,120,255,.25);
+      margin-top: 12px;
+    }
+
+    .destaque strong {
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .destaque p {
+      font-size: 13px;
+      margin: 0;
+    }
+
+    section {
+      padding: 65px 0;
+      scroll-margin-top: 95px;
+    }
+
+    .secao-titulo {
+      text-align: center;
+      max-width: 700px;
+      margin: 0 auto 35px;
+    }
+
+    .secao-titulo h2 {
+      font-size: clamp(26px, 4vw, 36px);
+      margin-bottom: 10px;
+    }
+
+    .secao-titulo p {
+      color: var(--cinza);
+    }
+
+    .grelha {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 20px;
+    }
+
+    .cartao {
+      background: var(--painel);
+      border: 1px solid var(--borda);
+      border-radius: 16px;
+      padding: 22px;
+      min-width: 0;
+    }
+
+    .icone {
+      width: 48px;
+      height: 48px;
+      border-radius: 13px;
+      background: rgba(57,120,255,.15);
+      display: grid;
+      place-items: center;
+      font-size: 24px;
+      margin-bottom: 15px;
+    }
+
+    .cartao h3 {
+      margin-bottom: 10px;
+    }
+
+    .cartao p {
+      color: var(--cinza);
+      font-size: 14px;
+    }
+
+    .cartao .botao {
+      margin-top: 18px;
+    }
+
+    .formulario {
+      background: var(--painel);
+      border: 1px solid var(--borda);
+      border-radius: 18px;
+      padding: 24px;
+    }
+
+    .formulario h3 {
+      margin-bottom: 18px;
+    }
+
+    .campo {
+      margin-bottom: 16px;
+    }
+
+    .campo label {
+      display: block;
+      margin-bottom: 7px;
+      color: #e5e9ff;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .campo input,
+    .campo textarea,
+    .campo select {
+      width: 100%;
+      padding: 13px;
+      color: white;
+      background: #10162e;
+      border: 1px solid #384366;
+      border-radius: 9px;
+      outline: none;
+    }
+
+    .campo input:focus,
+    .campo textarea:focus,
+    .campo select:focus {
+      border-color: var(--azul);
+    }
+
+    .campo textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .campo option {
+      background: #10152b;
+    }
+
+    .texto-ajuda {
+      color: var(--cinza);
+      font-size: 12px;
+      margin-top: 6px;
+    }
+
+    .aviso {
+      padding: 14px;
+      border-radius: 10px;
+      margin-bottom: 18px;
+      background: rgba(57,120,255,.12);
+      border: 1px solid rgba(57,120,255,.3);
+      color: #dbe5ff;
+      font-size: 14px;
+    }
+
+    .mensagem {
+      display: none;
+      padding: 14px;
+      margin: 18px 0;
+      border-radius: 10px;
+      overflow-wrap: anywhere;
+    }
+
+    .mensagem.sucesso {
+      display: block;
+      background: rgba(57,217,138,.12);
+      border: 1px solid var(--verde);
+      color: #aaffd2;
+    }
+
+    .mensagem.erro {
+      display: block;
+      background: rgba(255,100,124,.12);
+      border: 1px solid var(--vermelho);
+      color: #ffbdc8;
+    }
+
+    .linha {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .lista {
+      display: grid;
+      gap: 14px;
+    }
+
+    .anuncio {
+      background: var(--painel);
+      border: 1px solid var(--borda);
+      border-radius: 14px;
+      padding: 20px;
+      overflow-wrap: anywhere;
+    }
+
+    .anuncio-topo {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+
+    .anuncio h3 {
+      margin-bottom: 5px;
+    }
+
+    .anuncio p {
+      color: var(--cinza);
+      font-size: 14px;
+      white-space: pre-wrap;
+    }
+
+    .categoria {
+      display: inline-block;
+      color: #c8d5ff;
+      background: rgba(57,120,255,.14);
+      border-radius: 20px;
+      padding: 5px 10px;
+      font-size: 12px;
+    }
+
+    .estado {
+      display: inline-block;
+      border-radius: 20px;
+      padding: 5px 10px;
+      background: rgba(255,255,255,.08);
+      color: var(--cinza);
+      font-size: 12px;
+    }
+
+    .vazio {
+      padding: 24px;
+      background: var(--painel);
+      border: 1px dashed #495477;
+      border-radius: 14px;
+      color: var(--cinza);
+      text-align: center;
+    }
+
+    .rodape {
+      border-top: 1px solid var(--borda);
+      padding: 30px 0;
+      color: var(--cinza);
+      text-align: center;
+      font-size: 13px;
+    }
+
+    .oculto {
+      display: none !important;
+    }
+
+    .conta-info {
+      padding: 15px;
+      background: rgba(57,217,138,.08);
+      border: 1px solid rgba(57,217,138,.25);
+      border-radius: 12px;
+      margin-bottom: 20px;
+      overflow-wrap: anywhere;
+    }
+
+    .acoes {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    footer a {
+      color: #aebeff;
+    }
+
+    @media (max-width: 800px) {
+      .hero-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .grelha {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .navbar {
+        justify-content: center;
+      }
+
+      nav {
+        justify-content: center;
+      }
+    }
+
+    @media (max-width: 540px) {
+      .grelha,
+      .linha {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        padding: 48px 0;
+      }
+
+      section {
+        padding: 45px 0;
+      }
+
+      .formulario {
+        padding: 18px;
+      }
+
+      .botao {
+        width: 100%;
+      }
+
+      nav a {
+        font-size: 12px;
+      }
+    }
+  </style>
 </head>
 
 <body>
+
 <header>
-  <div class="contentor barra">
-    <a class="marca" href="#inicio" aria-label="LUMEXI Angola - Início">
-      <span class="simbolo">LX</span>
-      <span>
-        <strong>LUMEXI</strong>
-        <small>ANGOLA · OPORTUNIDADES</small>
-      </span>
+  <div class="container navbar">
+
+    <a href="#inicio" class="logo" aria-label="LUMEXI Angola - Início">
+      <span>LUME</span>XI
+      <small>ANGOLA</small>
     </a>
+
     <nav aria-label="Navegação principal">
       <a href="#inicio">Início</a>
       <a href="#servicos">Serviços</a>
       <a href="#oportunidades">Oportunidades</a>
       <a href="#publicar">Publicar</a>
+      <a href="#pagamentos">Pagamentos</a>
       <a href="#conta">Minha conta</a>
     </nav>
+
   </div>
 </header>
 
 <main>
-<section class="hero" id="inicio">
-  <div class="contentor hero-grelha">
-    <div>
-      <span class="etiqueta">● A tua próxima oportunidade começa aqui</span>
-      <h1>O teu futuro começa com uma <span class="destaque">oportunidade.</span></h1>
-      <p>A LUMEXI Angola aproxima pessoas, empresas e empreendedores. Descobre oportunidades de emprego, divulga os teus serviços e apresenta as tuas ideias ao mercado.</p>
-      <div class="acoes">
-        <a class="botao dourado" href="#oportunidades">Explorar oportunidades</a>
-        <a class="botao secundario" href="#conta">Criar conta grátis</a>
-      </div>
-    </div>
-    <div class="cartao-hero">
-      <h2>Oportunidades para crescer</h2>
-      <p>Uma plataforma pensada para pessoas e negócios em Angola.</p>
-      <div class="mini-cartao">
-        <span class="mini-icone">💼</span>
-        <div><strong>Emprego e carreira</strong><small>Descobre anúncios de oportunidades.</small></div>
-      </div>
-      <div class="mini-cartao">
-        <span class="mini-icone">🛍️</span>
-        <div><strong>Compra e venda</strong><small>Divulga produtos e serviços.</small></div>
-      </div>
-      <div class="mini-cartao">
-        <span class="mini-icone">🚀</span>
-        <div><strong>Negócios digitais</strong><small>Apresenta a tua atividade ao público.</small></div>
-      </div>
-    </div>
-  </div>
-</section>
 
-<section class="secao alternada" id="servicos">
-  <div class="contentor">
-    <div class="cabecalho-secao">
-      <div class="sobretitulo">O que oferecemos</div>
-      <h2>Soluções para as tuas necessidades</h2>
-      <p>Uma base digital para divulgar oportunidades, serviços e negócios.</p>
-    </div>
-    <div class="grelha">
-      <article class="cartao"><div class="icone">💼</div><h3>Emprego e oportunidades</h3><p>Consulta anúncios publicados e apresenta-te a novas oportunidades.</p></article>
-      <article class="cartao"><div class="icone">📄</div><h3>Documentos digitais</h3><p>Uma área destinada a serviços como currículos e cartas de candidatura.</p></article>
-      <article class="cartao"><div class="icone">🛒</div><h3>Compra e venda</h3><p>Uma área para divulgar produtos, encontrar clientes e promover serviços.</p></article>
-      <article class="cartao"><div class="icone">📢</div><h3>Publicidade empresarial</h3><p>Espaço pensado para a divulgação de empresas e pequenos negócios.</p></article>
-      <article class="cartao"><div class="icone">💻</div><h3>Serviços digitais</h3><p>Descobre possibilidades para apresentar e solicitar serviços digitais.</p></article>
-      <article class="cartao"><div class="icone">🤝</div><h3>Empreendedorismo</h3><p>Um espaço para aproximar pessoas, ideias e iniciativas de negócio.</p></article>
-    </div>
-  </div>
-</section>
+  <!-- PÁGINA INICIAL -->
+  <section class="hero" id="inicio">
+    <div class="container hero-grid">
 
-<section class="secao" id="oportunidades">
-  <div class="contentor">
-    <div class="cabecalho-secao">
-      <div class="sobretitulo">Anúncios publicados</div>
-      <h2>Explora as oportunidades</h2>
-      <p>Aqui aparecem os anúncios aprovados pela administração da LUMEXI.</p>
-    </div>
-    <div id="mensagemAnuncios" class="mensagem" role="status"></div>
-    <div id="listaAnuncios" class="lista-anuncios">
-      <div class="vazio">A carregar oportunidades...</div>
-    </div>
-    <div style="text-align:center;margin-top:25px">
-      <button class="botao secundario" type="button" id="atualizarAnuncios">Atualizar oportunidades</button>
-    </div>
-  </div>
-</section>
+      <div>
+        <span class="etiqueta">A plataforma de oportunidades de Angola</span>
 
-<section class="secao alternada" id="publicar">
-  <div class="contentor">
-    <div class="cabecalho-secao">
-      <div class="sobretitulo">Partilha uma oportunidade</div>
-      <h2>Publica o teu anúncio</h2>
-      <p>Entra na tua conta para submeter um anúncio. A publicação fica pendente até ser analisada pela administração.</p>
-    </div>
-    <form id="formPublicar" class="formulario">
-      <h3>Novo anúncio</h3>
-      <div class="campo">
-        <label for="tituloAnuncio">Título do anúncio</label>
-        <input id="tituloAnuncio" type="text" maxlength="120" placeholder="Ex.: Vaga para assistente comercial" required>
-      </div>
-      <div class="campo">
-        <label for="categoriaAnuncio">Categoria</label>
-        <select id="categoriaAnuncio" required>
-          <option value="">Escolhe uma categoria</option>
-          <option value="emprego">Emprego</option>
-          <option value="mercado">Compra e venda</option>
-          <option value="negocio">Negócios e serviços</option>
-        </select>
-      </div>
-      <div class="campo">
-        <label for="localAnuncio">Localização</label>
-        <input id="localAnuncio" type="text" maxlength="100" placeholder="Ex.: Benguela" required>
-      </div>
-      <div class="campo">
-        <label for="descricaoAnuncio">Descrição</label>
-        <textarea id="descricaoAnuncio" maxlength="3000" placeholder="Explica os detalhes do anúncio..." required></textarea>
-      </div>
-      <button class="botao principal largura-total" id="botaoPublicar" type="submit">Submeter anúncio</button>
-      <div id="mensagemPublicar" class="mensagem" role="status"></div>
-    </form>
-  </div>
-</section>
+        <h1>
+          O teu futuro começa com uma
+          <span>oportunidade.</span>
+        </h1>
 
-<section class="secao" id="conta">
-  <div class="contentor">
-    <div class="cabecalho-secao">
-      <div class="sobretitulo">A tua área pessoal</div>
-      <h2>Entra na comunidade LUMEXI</h2>
-      <p>Cria uma conta ou inicia sessão para submeter anúncios.</p>
+        <p>
+          A LUMEXI Angola aproxima pessoas, empresas e oportunidades.
+          Descobre serviços, encontra anúncios e dá o próximo passo
+          na tua vida profissional e nos teus negócios.
+        </p>
+
+        <div class="hero-botoes">
+          <a href="#oportunidades" class="botao botao-azul">
+            Explorar oportunidades
+          </a>
+
+          <a href="#conta" class="botao botao-secundario">
+            Criar conta grátis
+          </a>
+        </div>
+      </div>
+
+      <div class="hero-cartao">
+        <h2>Bem-vindo à LUMEXI</h2>
+
+        <p style="color:var(--cinza)">
+          Um espaço para transformar ideias em oportunidades.
+        </p>
+
+        <div class="destaque">
+          <strong>💼 Emprego</strong>
+          <p>Consulta anúncios de emprego aprovados.</p>
+        </div>
+
+        <div class="destaque">
+          <strong>🛍️ Negócios</strong>
+          <p>Divulga produtos e serviços.</p>
+        </div>
+
+        <div class="destaque">
+          <strong>📄 Serviços digitais</strong>
+          <p>Descobre soluções para a tua vida profissional.</p>
+        </div>
+      </div>
+
     </div>
-    <div class="formulario">
-      <div id="areaDesconectada">
-        <form id="formRegisto">
-          <h3>Criar conta</h3>
+  </section>
+
+  <!-- SERVIÇOS -->
+  <section id="servicos">
+    <div class="container">
+
+      <div class="secao-titulo">
+        <h2>Os nossos serviços</h2>
+        <p>
+          Soluções para candidatos, profissionais, empreendedores e empresas.
+        </p>
+      </div>
+
+      <div class="grelha">
+
+        <article class="cartao">
+          <div class="icone">📄</div>
+          <h3>Documentos digitais</h3>
+          <p>
+            Currículos profissionais, cartas de candidatura e outros
+            documentos preparados conforme as necessidades do cliente.
+          </p>
+          <a href="#pagamentos" class="botao botao-secundario">
+            Solicitar serviço
+          </a>
+        </article>
+
+        <article class="cartao">
+          <div class="icone">💼</div>
+          <h3>Emprego</h3>
+          <p>
+            Consulta oportunidades divulgadas na plataforma e encontra
+            informações para avançar na tua carreira.
+          </p>
+          <a href="#oportunidades" class="botao botao-secundario">
+            Ver oportunidades
+          </a>
+        </article>
+
+        <article class="cartao">
+          <div class="icone">🛍️</div>
+          <h3>Compra e venda</h3>
+          <p>
+            Divulga produtos, serviços e oportunidades comerciais
+            para chegar a mais pessoas.
+          </p>
+          <a href="#publicar" class="botao botao-secundario">
+            Criar anúncio
+          </a>
+        </article>
+
+        <article class="cartao">
+          <div class="icone">📢</div>
+          <h3>Publicidade</h3>
+          <p>
+            Divulga a tua empresa, o teu estabelecimento ou os teus
+            serviços junto do público da plataforma.
+          </p>
+          <a href="#pagamentos" class="botao botao-secundario">
+            Pedir informações
+          </a>
+        </article>
+
+        <article class="cartao">
+          <div class="icone">💡</div>
+          <h3>Apoio digital</h3>
+          <p>
+            Encontra soluções digitais para melhorar a apresentação
+            do teu negócio ou perfil profissional.
+          </p>
+          <a href="#pagamentos" class="botao botao-secundario">
+            Consultar serviços
+          </a>
+        </article>
+
+        <article class="cartao">
+          <div class="icone">🚀</div>
+          <h3>Novas oportunidades</h3>
+          <p>
+            Acompanha as oportunidades partilhadas por utilizadores
+            e empresas na LUMEXI Angola.
+          </p>
+          <a href="#oportunidades" class="botao botao-secundario">
+            Explorar
+          </a>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- OPORTUNIDADES -->
+  <section id="oportunidades">
+    <div class="container">
+
+      <div class="secao-titulo">
+        <h2>Oportunidades disponíveis</h2>
+        <p>
+          Os anúncios aprovados aparecem aqui.
+        </p>
+      </div>
+
+      <div id="mensagemOportunidades" class="mensagem"></div>
+
+      <div id="listaOportunidades" class="lista">
+        <div class="vazio">A carregar oportunidades...</div>
+      </div>
+
+      <div style="text-align:center;margin-top:22px">
+        <button
+          type="button"
+          class="botao botao-secundario"
+          id="btnAtualizarOportunidades"
+        >
+          Atualizar oportunidades
+        </button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- PUBLICAR ANÚNCIO -->
+  <section id="publicar">
+    <div class="container">
+
+      <div class="secao-titulo">
+        <h2>Publica uma oportunidade</h2>
+        <p>
+          Partilha uma vaga de emprego, um produto ou um serviço.
+          O anúncio será submetido para aprovação.
+        </p>
+      </div>
+
+      <div class="formulario">
+
+        <div id="avisoPublicar" class="aviso">
+          Para publicar, precisas de criar uma conta ou iniciar sessão.
+        </div>
+
+        <form id="formAnuncio">
+
           <div class="campo">
-            <label for="nomeRegisto">Nome completo</label>
-            <input id="nomeRegisto" type="text" maxlength="100" placeholder="O teu nome" autocomplete="name" required>
+            <label for="tituloAnuncio">Título do anúncio</label>
+            <input
+              id="tituloAnuncio"
+              type="text"
+              maxlength="150"
+              placeholder="Ex.: Vaga para assistente comercial"
+              required
+            >
           </div>
+
+          <div class="linha">
+            <div class="campo">
+              <label for="categoriaAnuncio">Categoria</label>
+              <select id="categoriaAnuncio" required>
+                <option value="">Selecionar categoria</option>
+                <option value="Emprego">Emprego</option>
+                <option value="Serviços">Serviços</option>
+                <option value="Compra e venda">Compra e venda</option>
+                <option value="Publicidade">Publicidade</option>
+                <option value="Outros">Outros</option>
+              </select>
+            </div>
+
+            <div class="campo">
+              <label for="localAnuncio">Localização</label>
+              <input
+                id="localAnuncio"
+                type="text"
+                maxlength="100"
+                placeholder="Ex.: Benguela"
+                required
+              >
+            </div>
+          </div>
+
           <div class="campo">
-            <label for="emailRegisto">E-mail</label>
-            <input id="emailRegisto" type="email" placeholder="exemplo@email.com" autocomplete="email" required>
+            <label for="descricaoAnuncio">Descrição</label>
+            <textarea
+              id="descricaoAnuncio"
+              maxlength="5000"
+              placeholder="Explica os detalhes da oportunidade..."
+              required
+            ></textarea>
           </div>
-          <div class="campo">
-            <label for="telefoneRegisto">Telefone (opcional)</label>
-            <input id="telefoneRegisto" type="tel" maxlength="30" placeholder="O teu contacto" autocomplete="tel">
-          </div>
-          <div class="campo">
-            <label for="senhaRegisto">Criar palavra-passe</label>
-            <input id="senhaRegisto" type="password" minlength="6" placeholder="Mínimo de 6 caracteres" autocomplete="new-password" required>
-          </div>
-          <button class="botao principal largura-total" id="botaoRegisto" type="submit">Criar conta</button>
-          <div id="mensagemRegisto" class="mensagem" role="status"></div>
-        </form>
-        <div class="separador"></div>
-        <form id="formLogin">
-          <h3>Já tens uma conta? Inicia sessão</h3>
-          <div class="campo">
-            <label for="emailLogin">E-mail</label>
-            <input id="emailLogin" type="email" placeholder="O teu e-mail" autocomplete="email" required>
-          </div>
-          <div class="campo">
-            <label for="senhaLogin">Palavra-passe</label>
-            <input id="senhaLogin" type="password" placeholder="A tua palavra-passe" autocomplete="current-password" required>
-          </div>
-          <button class="botao dourado largura-total" id="botaoLogin" type="submit">Iniciar sessão</button>
-          <div id="mensagemLogin" class="mensagem" role="status"></div>
-        </form>
-      </div>
-      <div id="areaConectada" class="oculto">
-        <h3>Bem-vindo à LUMEXI!</h3>
-        <p id="informacaoConta" style="color:var(--suave);margin:10px 0 18px"></p>
-        <p style="color:var(--suave);font-size:14px;margin-bottom:18px">Já podes submeter anúncios através da secção Publicar.</p>
-        <button class="botao secundario largura-total" id="botaoSair" type="button">Terminar sessão</button>
-        <div id="mensagemConta" class="mensagem" role="status"></div>
-      </div>
-    </div>
-  </div>
-</section>
-</main>
 
-<footer>
-  <div class="contentor">
-    <p><strong>LUMEXI Angola</strong> — Oportunidades que transformam vidas.</p>
-    <p>© <span id="anoAtual"></span> LUMEXI Angola. Todos os direitos reservados.</p>
-  </div>
-</footer>
-
-<script>
-"use strict";
-
-const SUPABASE_URL = "https://vvtunqkbwxbrkyxpfpwp.supabase.co";
-const SUPABASE_KEY = "sb_publishable_U_AiRZyKSw6i_xRg8FEIAw_vSpmORmc";
-
-const cliente = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-const listaAnuncios = document.getElementById("listaAnuncios");
-const areaDesconectada = document.getElementById("areaDesconectada");
-const areaConectada = document.getElementById("areaConectada");
-
-let utilizadorAtual = null;
-
-document.getElementById("anoAtual").textContent = new Date().getFullYear();
-
-function mostrarMensagem(id, texto, tipo) {
-  const elemento = document.getElementById(id);
-  elemento.textContent = texto;
-  elemento.className = "mensagem " + (tipo === "sucesso" ? "sucesso" : "erro");
-}
-
-function limparMensagem(id) {
-  const elemento = document.getElementById(id);
-  elemento.textContent = "";
-  elemento.className = "mensagem";
-}
-
-function traduzirErro(erro) {
-  const texto = String(erro?.message || erro || "Ocorreu um erro.");
-  if (texto.toLowerCase().includes("invalid login credentials")) {
-    return "E-mail ou palavra-passe incorretos.";
-  }
-  if (texto.toLowerCase().includes("email not confirmed")) {
-    return "Confirma primeiro o teu e-mail. Verifica a caixa de entrada e o spam.";
-  }
-  if (texto.toLowerCase().includes("user already registered")) {
-    return "Este e-mail já tem uma conta. Tenta iniciar sessão.";
-  }
-  if (texto.toLowerCase().includes("password should be at least")) {
-    return "A palavra-passe deve ter pelo menos 6 caracteres.";
-  }
-  if (texto.toLowerCase().includes("row-level security")) {
-    return "A base de dados recusou esta operação por causa das permissões. Contacta a administração.";
-  }
-  return texto;
-}
-
-function atualizarAreaConta(utilizador) {
-  utilizadorAtual = utilizador || null;
-
-  if (utilizadorAtual) {
-    areaDesconectada.classList.add("oculto");
-    areaConectada.classList.remove("oculto");
-    document.getElementById("informacaoConta").textContent =
-      "Sessão iniciada com: " + (utilizadorAtual.email || "conta LUMEXI");
-  } else {
-    areaConectada.classList.add("oculto");
-    areaDesconectada.classList.remove("oculto");
-  }
-}
-
-async function carregarAnuncios() {
-  const mensagem = document.getElementById("mensagemAnuncios");
-  mensagem.className = "mensagem";
-  mensagem.textContent = "";
-  listaAnuncios.replaceChildren();
-
-  const carregamento = document.createElement("div");
-  carregamento.className = "vazio";
-  carregamento.textContent = "A carregar oportunidades...";
-  listaAnuncios.appendChild(carregamento);
-
-  try {
-    const { data, error } = await cliente
-      .from("listings")
-      .select("id,title,description,category,location,created_at")
-      .eq("status", "approved")
-      .order("created_at", { ascending: false });
-
-    if (error) throw error;
-
-    listaAnuncios.replaceChildren();
-
-    if (!data || data.length === 0) {
-      const vazio = document.createElement("div");
-      vazio.className = "vazio";
-      vazio.textContent = "Ainda não existem anúncios aprovados. Volta mais tarde para veres novas oportunidades.";
-      listaAnuncios.appendChild(vazio);
-      return;
-    }
-
-    data.forEach((anuncio) => {
-      const cartao = document.createElement("article");
-      cartao.className = "anuncio";
-
-      const titulo = document.createElement("h3");
-      titulo.textContent = anuncio.title || "Anúncio sem título";
-
-      const descricao = document.createElement("p");
-      descricao.textContent = anuncio.description || "Sem descrição.";
-
-      const categoria = document.createElement("small");
-      categoria.textContent = "Categoria: " + traduzirCategoria(anuncio.category);
-
-      const localizacao = document.createElement("small");
-      localizacao.textContent = "Localização: " + (anuncio.location || "Não indicada");
-
-      cartao.append(titulo, descricao, categoria, localizacao);
-      listaAnuncios.appendChild(cartao);
-    });
-  } catch (erro) {
-    listaAnuncios.replaceChildren();
-    const vazio = document.createElement("div");
-    vazio.className = "vazio";
-    vazio.textContent = "Não foi possível carregar as oportunidades.";
-    listaAnuncios.appendChild(vazio);
-    mostrarMensagem("mensagemAnuncios", traduzirErro(erro), "erro");
-    console.error("Erro ao carregar anúncios:", erro);
-  }
-}
-
-function traduzirCategoria(categoria) {
-  const categorias = {
-    emprego: "Emprego",
-    mercado: "Compra e venda",
-    negocio: "Negócios e serviços"
-  };
-  return categorias[categoria] || categoria || "Outros";
-}
-
-document.getElementById("atualizarAnuncios").addEventListener("click", carregarAnuncios);
-
-document.getElementById("formRegisto").addEventListener("submit", async (evento) => {
-  evento.preventDefault();
-  limparMensagem("mensagemRegisto");
-
-  const botao = document.getElementById("botaoRegisto");
-  const nome = document.getElementById("nomeRegisto").value.trim();
-  const email = document.getElementById("emailRegisto").value.trim();
-  const telefone = document.getElementById("telefoneRegisto").value.trim();
-  const password = document.getElementById("senhaRegisto").value;
-
-  botao.disabled = true;
-  botao.textContent = "A criar conta...";
-
-  try {
-    const { data, error } = await cliente.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          full_name: nome,
-          phone: telefone
-        },
-        emailRedirectTo: window.location.origin + window.location.pathname
-      }
-    });
-
-    if (error) throw error;
-
-    if (data.session && data.user) {
-      atualizarAreaConta(data.user);
-      mostrarMensagem("mensagemRegisto", "Conta criada com sucesso! Já podes publicar anúncios.", "sucesso");
-    } else {
-      mostrarMensagem(
-        "mensagemRegisto",
-        "Registo enviado! Abre o teu e-mail e carrega no link de confirmação antes de iniciares sessão.",
-        "sucesso"
-      );
-    }
-
-    document.getElementById("formRegisto").reset();
-  } catch (erro) {
-    mostrarMensagem("mensagemRegisto", traduzirErro(erro), "erro");
-  } finally {
-    botao.disabled = false;
-    botao.textContent = "Criar conta";
-  }
-});
-
-document.getElementById("formLogin").addEventListener("submit", async (evento) => {
-  evento.preventDefault();
-  limparMensagem("mensagemLogin");
-
-  const botao = document.getElementById("botaoLogin");
-  const email = document.getElementById("emailLogin").value.trim();
-  const password = document.getElementById("senhaLogin").value;
-
-  botao.disabled = true;
-  botao.textContent = "A iniciar sessão...";
-
-  try {
-    const { data, error } = await cliente.auth.signInWithPassword({
-      email,
-      password
-    });
-
-    if (error) throw error;
-
-    atualizarAreaConta(data.user);
-    mostrarMensagem("mensagemLogin", "Sessão iniciada com sucesso!", "sucesso");
-    document.getElementById("formLogin").reset();
-  } catch (erro) {
-    mostrarMensagem("mensagemLogin", traduzirErro(erro), "erro");
-  } finally {
-    botao.disabled = false;
-    botao.textContent = "Iniciar sessão";
-  }
-});
-
-document.getElementById("botaoSair").addEventListener("click", async () => {
-  limparMensagem("mensagemConta");
-
-  try {
-    const { error } = await cliente.auth.signOut();
-    if (error) throw error;
-    atualizarAreaConta(null);
-  } catch (erro) {
-    mostrarMensagem("mensagemConta", traduzirErro(erro), "erro");
-  }
-});
-
-document.getElementById("formPublicar").addEventListener("submit", async (evento) => {
-  evento.preventDefault();
-  limparMensagem("mensagemPublicar");
-
-  const botao = document.getElementById("botaoPublicar");
-
-  if (!utilizadorAtual) {
-    mostrarMensagem(
-      "mensagemPublicar",
-      "Para publicares um anúncio, inicia sessão ou cria uma conta na secção Minha conta.",
-      "erro"
-    );
-    return;
-  }
-
-  const titulo = document.getElementById("tituloAnuncio").value.trim();
-  const categoria = document.getElementById("categoriaAnuncio").value;
-  const localizacao = document.getElementById("localAnuncio").value.trim();
-  const descricao = document.getElementById("descricaoAnuncio").value.trim();
-
-  if (!["emprego", "mercado", "negocio"].includes(categoria)) {
-    mostrarMensagem("mensagemPublicar", "Escolhe uma das categorias disponíveis.", "erro");
-    return;
-  }
-
-  botao.disabled = true;
-  botao.textContent = "A submeter anúncio...";
-
-  try {
-    const { error } = await cliente
-      .from("listings")
-      .insert({
-        user_id: utilizadorAtual.id,
-        title: titulo,
-        description: descricao,
-        category: categoria,
-        location: localizacao,
-        status: "pending"
-      });
-
-    if (error) throw error;
-
-    mostrarMensagem(
-      "mensagemPublicar",
-      "Anúncio submetido com sucesso! Ficará pendente até ser analisado pela administração.",
-      "sucesso"
-    );
-
-    document.getElementById("formPublicar").reset();
-  } catch (erro) {
-    mostrarMensagem("mensagemPublicar", "Não foi possível submeter o anúncio: " + traduzirErro(erro), "erro");
-    console.error("Erro ao publicar anúncio:", erro);
-  } finally {
-    botao.disabled = false;
-    botao.textContent = "Submeter anúncio";
-  }
-});
-
-async function iniciarPlataforma() {
-  await carregarAnuncios();
-
-  try {
-    const { data, error } = await cliente.auth.getSession();
-    if (error) throw error;
-    atualizarAreaConta(data.session ? data.session.user : null);
-  } catch (erro) {
-    console.error("Não foi possível verificar a sessão:", erro);
-    atualizarAreaConta(null);
-  }
-
-  cliente.auth.onAuthStateChange((_evento, sessao) => {
-    atualizarAreaConta(sessao ? sessao.user : null);
-  });
-}
-
-iniciarPlataforma();
-</script>
-</body>
-</html>
-<!-- LUMEXI ANGOLA — ÁREA DE SERVIÇOS E PAGAMENTOS -->
-<section id="areaPagamentosLumexi" style="
-  max-width:900px;
-  margin:40px auto;
-  padding:24px;
-  background:#151d35;
-  color:#ffffff;
-  border:1px solid #3978ff;
-  border-radius:18px;
-  font-family:Arial,sans-serif;
-">
-
-  <div style="text-align:center;margin-bottom:25px">
-    <h2 style="color:#ffffff;margin-bottom:8px">
-      LUMEXI <span style="color:#8155ff">ANGOLA</span>
-    </h2>
-    <p style="color:#e7c477;margin:0">
-      Oportunidades que transformam vidas.
-    </p>
-    <h3 style="margin-top:25px">Serviços e pagamentos</h3>
-    <p style="color:#cbd5e1">
-      Escolhe o serviço, indica o valor e regista o teu pedido.
-    </p>
-  </div>
-
-  <div style="
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-    gap:12px;
-    margin-bottom:25px;
-  ">
-    <div style="background:#090d19;padding:16px;border-radius:12px">
-      <strong style="color:#8155ff">📄 Documentos</strong>
-      <p>Currículos e documentos profissionais.</p>
-    </div>
-
-    <div style="background:#090d19;padding:16px;border-radius:12px">
-      <strong style="color:#3978ff">💼 Emprego</strong>
-      <p>Serviços relacionados com anúncios de emprego.</p>
-    </div>
-
-    <div style="background:#090d19;padding:16px;border-radius:12px">
-      <strong style="color:#e7c477">📢 Publicidade</strong>
-      <p>Promoção de empresas e empreendedores.</p>
-    </div>
-
-    <div style="background:#090d19;padding:16px;border-radius:12px">
-      <strong style="color:#39d98a">🛍️ Mercado</strong>
-      <p>Promoção de produtos e serviços.</p>
-    </div>
-  </div>
-
-  <form id="formPagamentoLumexi">
-
-    <label for="servicoLumexi">1. Escolhe o serviço</label>
-
-    <select id="servicoLumexi" required style="
-      display:block;width:100%;box-sizing:border-box;
-      padding:13px;margin:8px 0 18px;
-      border-radius:8px;border:1px solid #3978ff;
-      background:#090d19;color:#ffffff;
-    ">
-      <option value="">Seleccionar serviço</option>
-      <option value="Currículo profissional">Currículo profissional</option>
-      <option value="Documentos profissionais">Documentos profissionais</option>
-      <option value="Publicidade para empresas">Publicidade para empresas</option>
-      <option value="Promoção de produtos">Promoção de produtos</option>
-      <option value="Serviço relacionado com emprego">Serviço relacionado com emprego</option>
-      <option value="Outro serviço LUMEXI">Outro serviço</option>
-    </select>
-
-    <label for="valorPagamentoLumexi">2. Valor do pedido (Kz)</label>
-
-    <input
-      id="valorPagamentoLumexi"
-      type="number"
-      min="1"
-      step="1"
-      required
-      placeholder="Ex.: 5000"
-      style="
-        display:block;width:100%;box-sizing:border-box;
-        padding:13px;margin:8px 0 18px;
-        border-radius:8px;border:1px solid #3978ff;
-        background:#090d19;color:#ffffff;
-      "
-    >
-
-    <label for="metodoPagamentoLumexi">3. Método de pagamento pretendido</label>
-
-    <select id="metodoPagamentoLumexi" required style="
-      display:block;width:100%;box-sizing:border-box;
-      padding:13px;margin:8px 0 18px;
-      border-radius:8px;border:1px solid #3978ff;
-      background:#090d19;color:#ffffff;
-    ">
-      <option value="">Seleccionar método</option>
-      <option value="paypay">PayPay</option>
-      <option value="multicaixa_express">Multicaixa Express</option>
-      <option value="bank_transfer">Transferência bancária</option>
-      <option value="multicaixa_reference">Referência Multicaixa</option>
-    </select>
-
-    <label for="detalhesPagamentoLumexi">4. Detalhes do pedido</label>
-
-    <textarea
-      id="detalhesPagamentoLumexi"
-      rows="3"
-      required
-      maxlength="1000"
-      placeholder="Explica brevemente o que pretendes contratar."
-      style="
-        display:block;width:100%;box-sizing:border-box;
-        padding:13px;margin:8px 0 20px;
-        border-radius:8px;border:1px solid #3978ff;
-        background:#090d19;color:#ffffff;
-        resize:vertical;
-      "
-    ></textarea>
-
-    <button type="submit" id="botaoPagamentoLumexi" style="
-      width:100%;padding:15px;
-      border:0;border-radius:10px;
-      background:linear-gradient(90deg,#3978ff,#8155ff);
-      color:#ffffff;font-size:16px;font-weight:bold;
-      cursor:pointer;
-    ">
-      Registar pedido de pagamento
-    </button>
-
-    <p style="font-size:12px;color:#cbd5e1;margin-top:15px">
-      O registo não significa que o pagamento foi efectuado.
-      Aguarda as instruções e a confirmação do serviço.
-    </p>
-
-    <div
-      id="mensagemPagamentoLumexi"
-      role="status"
-      aria-live="polite"
-      style="margin-top:15px;overflow-wrap:anywhere"
-    ></div>
-
-  </form>
-
-  <hr style="border:0;border-top:1px solid #334155;margin:28px 0">
-
-  <h3>Os meus pedidos</h3>
-
-  <button type="button" id="verPedidosLumexi" style="
-    padding:11px 16px;border:1px solid #3978ff;
-    border-radius:8px;background:#090d19;
-    color:#ffffff;cursor:pointer;
-  ">
-    Consultar os meus pedidos
-  </button>
-
-  <div
-    id="listaPedidosLumexi"
-    aria-live="polite"
-    style="margin-top:15px;overflow-wrap:anywhere"
-  ></div>
-
-</section>
-
-<script>
-(function () {
-  const formulario = document.getElementById("formPagamentoLumexi");
-  const botao = document.getElementById("botaoPagamentoLumexi");
-  const mensagem = document.getElementById("mensagemPagamentoLumexi");
-  const lista = document.getElementById("listaPedidosLumexi");
-  const botaoConsultar = document.getElementById("verPedidosLumexi");
-
-  function mostrarMensagem(texto, sucesso) {
-    mensagem.textContent = texto;
-    mensagem.style.color = sucesso ? "#39d98a" : "#ff8b8b";
-  }
-
-  function escaparHTML(valor) {
-    return String(valor ?? "").replace(/[&<>"']/g, function (caractere) {
-      return {
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        '"': "&quot;",
-        "'": "&#39;"
-      }[caractere];
-    });
-  }
-
-  function traduzirEstado(estado) {
-    const estados = {
-      pending: "Pendente",
-      paid: "Pago",
-      rejected: "Rejeitado",
-      cancelled: "Cancelado"
-    };
-
-    return estados[estado] || estado || "Não definido";
-  }
-
-  formulario.addEventListener("submit", async function (evento) {
-    evento.preventDefault();
-
-    if (typeof cliente === "undefined" || !cliente.auth) {
-      mostrarMensagem(
-        "Não foi possível aceder à ligação do Supabase. Contacta o suporte.",
-        false
-      );
-      return;
-    }
-
-    const servico = document.getElementById("servicoLumexi").value;
-    const valor = Number(
-      document.getElementById("valorPagamentoLumexi").value
-    );
-    const metodo = document.getElementById("metodoPagamentoLumexi").value;
-    const detalhes = document.getElementById("detalhesPagamentoLumexi").value.trim();
-
-    if (!servico || !Number.isFinite(valor) || valor <= 0 || !metodo || !detalhes) {
-      mostrarMensagem("Preenche todos os campos correctamente.", false);
-      return;
-    }
-
-    botao.disabled = true;
-    botao.textContent = "A registar pedido...";
-
-    try {
-      const { data: sessaoDados, error: erroSessao } =
-        await cliente.auth.getUser();
-
-      if (erroSessao) throw erroSessao;
-
-      const utilizador = sessaoDados && sessaoDados.user;
-
-      if (!utilizador) {
-        mostrarMensagem(
-          "Inicia sessão na tua conta LUMEXI antes de registar um pedido.",
-          false
-        );
-        return;
-      }
-
-      const descricao = "Serviço: " + servico + "\nDetalhes: " + detalhes;
-
-      const { error } = await cliente
-        .from("payment_requests")
-        .insert([{
-          user_id: utilizador.id,
-          amount: valor,
-          payment_method: metodo,
-          status: "pending",
-          description: descricao
-        }]);
-
-      if (error) throw error;
-
-      mostrarMensagem(
-        "Pedido registado com sucesso! Estado: Pendente. Isto não confirma um pagamento. Aguarda as instruções do serviço.",
-        true
-      );
-
-      formulario.reset();
-      await carregarMeusPedidos();
-
-    } catch (erro) {
-      console.error("Erro ao registar pedido de pagamento:", erro);
-
-      mostrarMensagem(
-        "Não foi possível registar o pedido. Confirma a sessão e as permissões da base de dados.",
-        false
-      );
-
-    } finally {
-      botao.disabled = false;
-      botao.textContent = "Registar pedido de pagamento";
-    }
-  });
-
-  async function carregarMeusPedidos() {
-    if (typeof cliente === "undefined" || !cliente.auth) {
-      lista.textContent = "A ligação ao Supabase não está disponível.";
-      return;
-    }
-
-    lista.textContent = "A carregar pedidos...";
-
-    try {
-      const { data: sessaoDados, error: erroSessao } =
-        await cliente.auth.getUser();
-
-      if (erroSessao) throw erroSessao;
-
-      const utilizador = sessaoDados && sessaoDados.user;
-
-      if (!utilizador) {
-        lista.textContent = "Inicia sessão para consultar os teus pedidos.";
-        return;
-      }
-
-      const { data, error } = await cliente
-        .from("payment_requests")
-        .select("id, amount, payment_method, status, description, created_at")
-        .eq("user_id", utilizador.id)
-        .order("created_at", { ascending: false })
-        .limit(20);
-
-      if (error) throw error;
-
-      if (!data || data.length === 0) {
-        lista.textContent = "Ainda não tens pedidos de pagamento.";
-        return;
-      }
-
-      lista.innerHTML = data.map(function (pedido) {
-        return `
-          <article style="
-            background:#090d19;padding:14px;margin:10px 0;
-            border-radius:10px;border:1px solid #334155;
-          ">
-            <strong>Pedido #${escaparHTML(pedido.id)}</strong>
-            <p>Valor: ${escaparHTML(
-              Number(pedido.amount).toLocaleString("pt-PT")
-            )} Kz</p>
-            <p>Método: ${escaparHTML(pedido.payment_method)}</p>
-            <p>Estado: ${escaparHTML(traduzirEstado(pedido.status))}</p>
-            <p>Detalhes: ${escaparHTML(pedido.description)}</p>
-            <small>${escaparHTML(
-              pedido.created_at
-                ? new Date(pedido.created_at).toLocaleString("pt-PT")
-                : ""
-            )}</small>
-          </article>
-        `;
-      }).join("");
-
-    } catch (erro) {
-      console.error("Erro ao consultar pedidos:", erro);
-      lista.textContent =
-        "Não foi possível consultar os pedidos. Verifica a sessão e as permissões.";
-    }
-  }
-
-  botaoConsultar.addEventListener("click", carregarMeusPedidos);
-})();
-</script>
+          <button
+            type
