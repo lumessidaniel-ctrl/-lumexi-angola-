@@ -669,3 +669,348 @@ iniciarPlataforma();
 </script>
 </body>
 </html>
+<!-- LUMEXI ANGOLA — ÁREA DE SERVIÇOS E PAGAMENTOS -->
+<section id="areaPagamentosLumexi" style="
+  max-width:900px;
+  margin:40px auto;
+  padding:24px;
+  background:#151d35;
+  color:#ffffff;
+  border:1px solid #3978ff;
+  border-radius:18px;
+  font-family:Arial,sans-serif;
+">
+
+  <div style="text-align:center;margin-bottom:25px">
+    <h2 style="color:#ffffff;margin-bottom:8px">
+      LUMEXI <span style="color:#8155ff">ANGOLA</span>
+    </h2>
+    <p style="color:#e7c477;margin:0">
+      Oportunidades que transformam vidas.
+    </p>
+    <h3 style="margin-top:25px">Serviços e pagamentos</h3>
+    <p style="color:#cbd5e1">
+      Escolhe o serviço, indica o valor e regista o teu pedido.
+    </p>
+  </div>
+
+  <div style="
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:12px;
+    margin-bottom:25px;
+  ">
+    <div style="background:#090d19;padding:16px;border-radius:12px">
+      <strong style="color:#8155ff">📄 Documentos</strong>
+      <p>Currículos e documentos profissionais.</p>
+    </div>
+
+    <div style="background:#090d19;padding:16px;border-radius:12px">
+      <strong style="color:#3978ff">💼 Emprego</strong>
+      <p>Serviços relacionados com anúncios de emprego.</p>
+    </div>
+
+    <div style="background:#090d19;padding:16px;border-radius:12px">
+      <strong style="color:#e7c477">📢 Publicidade</strong>
+      <p>Promoção de empresas e empreendedores.</p>
+    </div>
+
+    <div style="background:#090d19;padding:16px;border-radius:12px">
+      <strong style="color:#39d98a">🛍️ Mercado</strong>
+      <p>Promoção de produtos e serviços.</p>
+    </div>
+  </div>
+
+  <form id="formPagamentoLumexi">
+
+    <label for="servicoLumexi">1. Escolhe o serviço</label>
+
+    <select id="servicoLumexi" required style="
+      display:block;width:100%;box-sizing:border-box;
+      padding:13px;margin:8px 0 18px;
+      border-radius:8px;border:1px solid #3978ff;
+      background:#090d19;color:#ffffff;
+    ">
+      <option value="">Seleccionar serviço</option>
+      <option value="Currículo profissional">Currículo profissional</option>
+      <option value="Documentos profissionais">Documentos profissionais</option>
+      <option value="Publicidade para empresas">Publicidade para empresas</option>
+      <option value="Promoção de produtos">Promoção de produtos</option>
+      <option value="Serviço relacionado com emprego">Serviço relacionado com emprego</option>
+      <option value="Outro serviço LUMEXI">Outro serviço</option>
+    </select>
+
+    <label for="valorPagamentoLumexi">2. Valor do pedido (Kz)</label>
+
+    <input
+      id="valorPagamentoLumexi"
+      type="number"
+      min="1"
+      step="1"
+      required
+      placeholder="Ex.: 5000"
+      style="
+        display:block;width:100%;box-sizing:border-box;
+        padding:13px;margin:8px 0 18px;
+        border-radius:8px;border:1px solid #3978ff;
+        background:#090d19;color:#ffffff;
+      "
+    >
+
+    <label for="metodoPagamentoLumexi">3. Método de pagamento pretendido</label>
+
+    <select id="metodoPagamentoLumexi" required style="
+      display:block;width:100%;box-sizing:border-box;
+      padding:13px;margin:8px 0 18px;
+      border-radius:8px;border:1px solid #3978ff;
+      background:#090d19;color:#ffffff;
+    ">
+      <option value="">Seleccionar método</option>
+      <option value="paypay">PayPay</option>
+      <option value="multicaixa_express">Multicaixa Express</option>
+      <option value="bank_transfer">Transferência bancária</option>
+      <option value="multicaixa_reference">Referência Multicaixa</option>
+    </select>
+
+    <label for="detalhesPagamentoLumexi">4. Detalhes do pedido</label>
+
+    <textarea
+      id="detalhesPagamentoLumexi"
+      rows="3"
+      required
+      maxlength="1000"
+      placeholder="Explica brevemente o que pretendes contratar."
+      style="
+        display:block;width:100%;box-sizing:border-box;
+        padding:13px;margin:8px 0 20px;
+        border-radius:8px;border:1px solid #3978ff;
+        background:#090d19;color:#ffffff;
+        resize:vertical;
+      "
+    ></textarea>
+
+    <button type="submit" id="botaoPagamentoLumexi" style="
+      width:100%;padding:15px;
+      border:0;border-radius:10px;
+      background:linear-gradient(90deg,#3978ff,#8155ff);
+      color:#ffffff;font-size:16px;font-weight:bold;
+      cursor:pointer;
+    ">
+      Registar pedido de pagamento
+    </button>
+
+    <p style="font-size:12px;color:#cbd5e1;margin-top:15px">
+      O registo não significa que o pagamento foi efectuado.
+      Aguarda as instruções e a confirmação do serviço.
+    </p>
+
+    <div
+      id="mensagemPagamentoLumexi"
+      role="status"
+      aria-live="polite"
+      style="margin-top:15px;overflow-wrap:anywhere"
+    ></div>
+
+  </form>
+
+  <hr style="border:0;border-top:1px solid #334155;margin:28px 0">
+
+  <h3>Os meus pedidos</h3>
+
+  <button type="button" id="verPedidosLumexi" style="
+    padding:11px 16px;border:1px solid #3978ff;
+    border-radius:8px;background:#090d19;
+    color:#ffffff;cursor:pointer;
+  ">
+    Consultar os meus pedidos
+  </button>
+
+  <div
+    id="listaPedidosLumexi"
+    aria-live="polite"
+    style="margin-top:15px;overflow-wrap:anywhere"
+  ></div>
+
+</section>
+
+<script>
+(function () {
+  const formulario = document.getElementById("formPagamentoLumexi");
+  const botao = document.getElementById("botaoPagamentoLumexi");
+  const mensagem = document.getElementById("mensagemPagamentoLumexi");
+  const lista = document.getElementById("listaPedidosLumexi");
+  const botaoConsultar = document.getElementById("verPedidosLumexi");
+
+  function mostrarMensagem(texto, sucesso) {
+    mensagem.textContent = texto;
+    mensagem.style.color = sucesso ? "#39d98a" : "#ff8b8b";
+  }
+
+  function escaparHTML(valor) {
+    return String(valor ?? "").replace(/[&<>"']/g, function (caractere) {
+      return {
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      }[caractere];
+    });
+  }
+
+  function traduzirEstado(estado) {
+    const estados = {
+      pending: "Pendente",
+      paid: "Pago",
+      rejected: "Rejeitado",
+      cancelled: "Cancelado"
+    };
+
+    return estados[estado] || estado || "Não definido";
+  }
+
+  formulario.addEventListener("submit", async function (evento) {
+    evento.preventDefault();
+
+    if (typeof cliente === "undefined" || !cliente.auth) {
+      mostrarMensagem(
+        "Não foi possível aceder à ligação do Supabase. Contacta o suporte.",
+        false
+      );
+      return;
+    }
+
+    const servico = document.getElementById("servicoLumexi").value;
+    const valor = Number(
+      document.getElementById("valorPagamentoLumexi").value
+    );
+    const metodo = document.getElementById("metodoPagamentoLumexi").value;
+    const detalhes = document.getElementById("detalhesPagamentoLumexi").value.trim();
+
+    if (!servico || !Number.isFinite(valor) || valor <= 0 || !metodo || !detalhes) {
+      mostrarMensagem("Preenche todos os campos correctamente.", false);
+      return;
+    }
+
+    botao.disabled = true;
+    botao.textContent = "A registar pedido...";
+
+    try {
+      const { data: sessaoDados, error: erroSessao } =
+        await cliente.auth.getUser();
+
+      if (erroSessao) throw erroSessao;
+
+      const utilizador = sessaoDados && sessaoDados.user;
+
+      if (!utilizador) {
+        mostrarMensagem(
+          "Inicia sessão na tua conta LUMEXI antes de registar um pedido.",
+          false
+        );
+        return;
+      }
+
+      const descricao = "Serviço: " + servico + "\nDetalhes: " + detalhes;
+
+      const { error } = await cliente
+        .from("payment_requests")
+        .insert([{
+          user_id: utilizador.id,
+          amount: valor,
+          payment_method: metodo,
+          status: "pending",
+          description: descricao
+        }]);
+
+      if (error) throw error;
+
+      mostrarMensagem(
+        "Pedido registado com sucesso! Estado: Pendente. Isto não confirma um pagamento. Aguarda as instruções do serviço.",
+        true
+      );
+
+      formulario.reset();
+      await carregarMeusPedidos();
+
+    } catch (erro) {
+      console.error("Erro ao registar pedido de pagamento:", erro);
+
+      mostrarMensagem(
+        "Não foi possível registar o pedido. Confirma a sessão e as permissões da base de dados.",
+        false
+      );
+
+    } finally {
+      botao.disabled = false;
+      botao.textContent = "Registar pedido de pagamento";
+    }
+  });
+
+  async function carregarMeusPedidos() {
+    if (typeof cliente === "undefined" || !cliente.auth) {
+      lista.textContent = "A ligação ao Supabase não está disponível.";
+      return;
+    }
+
+    lista.textContent = "A carregar pedidos...";
+
+    try {
+      const { data: sessaoDados, error: erroSessao } =
+        await cliente.auth.getUser();
+
+      if (erroSessao) throw erroSessao;
+
+      const utilizador = sessaoDados && sessaoDados.user;
+
+      if (!utilizador) {
+        lista.textContent = "Inicia sessão para consultar os teus pedidos.";
+        return;
+      }
+
+      const { data, error } = await cliente
+        .from("payment_requests")
+        .select("id, amount, payment_method, status, description, created_at")
+        .eq("user_id", utilizador.id)
+        .order("created_at", { ascending: false })
+        .limit(20);
+
+      if (error) throw error;
+
+      if (!data || data.length === 0) {
+        lista.textContent = "Ainda não tens pedidos de pagamento.";
+        return;
+      }
+
+      lista.innerHTML = data.map(function (pedido) {
+        return `
+          <article style="
+            background:#090d19;padding:14px;margin:10px 0;
+            border-radius:10px;border:1px solid #334155;
+          ">
+            <strong>Pedido #${escaparHTML(pedido.id)}</strong>
+            <p>Valor: ${escaparHTML(
+              Number(pedido.amount).toLocaleString("pt-PT")
+            )} Kz</p>
+            <p>Método: ${escaparHTML(pedido.payment_method)}</p>
+            <p>Estado: ${escaparHTML(traduzirEstado(pedido.status))}</p>
+            <p>Detalhes: ${escaparHTML(pedido.description)}</p>
+            <small>${escaparHTML(
+              pedido.created_at
+                ? new Date(pedido.created_at).toLocaleString("pt-PT")
+                : ""
+            )}</small>
+          </article>
+        `;
+      }).join("");
+
+    } catch (erro) {
+      console.error("Erro ao consultar pedidos:", erro);
+      lista.textContent =
+        "Não foi possível consultar os pedidos. Verifica a sessão e as permissões.";
+    }
+  }
+
+  botaoConsultar.addEventListener("click", carregarMeusPedidos);
+})();
+</script>
