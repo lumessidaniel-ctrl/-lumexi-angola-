@@ -19,6 +19,7 @@
   --border: #ffffff20;
   --green: #39d98a;
   --red: #ff7777;
+  --gold: #e7c477;
 }
 
 * {
@@ -113,6 +114,10 @@ button:disabled {
   background: #812d3b;
 }
 
+.paid {
+  background: #137c53;
+}
+
 .cards {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -125,11 +130,12 @@ button:disabled {
   border: 1px solid var(--border);
   padding: 18px;
   border-radius: 12px;
+  overflow-wrap: anywhere;
 }
 
 .card strong {
   display: block;
-  font-size: 28px;
+  font-size: 26px;
 }
 
 .card span {
@@ -156,6 +162,19 @@ button:disabled {
   padding: 4px 9px;
   border-radius: 20px;
   font-size: 12px;
+  margin: 2px 3px 2px 0;
+}
+
+.badge-pending {
+  background: #65501c;
+}
+
+.badge-paid {
+  background: #137c53;
+}
+
+.badge-rejected {
+  background: #812d3b;
 }
 
 .message {
@@ -182,6 +201,18 @@ small {
   color: var(--muted);
 }
 
+.money {
+  color: var(--gold);
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.divider {
+  border: 0;
+  border-top: 1px solid var(--border);
+  margin: 18px 0;
+}
+
 @media (max-width: 500px) {
   header h1 {
     font-size: 21px;
@@ -189,6 +220,10 @@ small {
 
   .panel {
     padding: 15px;
+  }
+
+  .card strong {
+    font-size: 22px;
   }
 }
 </style>
@@ -228,9 +263,7 @@ small {
         required
       >
 
-      <button id="loginButton" type="submit">
-        Entrar
-      </button>
+      <button id="loginButton" type="submit">Entrar</button>
     </form>
 
     <small>
@@ -248,25 +281,31 @@ small {
         Atualizar anúncios
       </button>
 
+      <button id="refreshPayments" type="button">
+        Atualizar pagamentos
+      </button>
+
       <button id="logout" class="secondary" type="button">
         Terminar sessão
       </button>
     </div>
 
+    <h2>Gestão de anúncios</h2>
+
     <div class="cards">
       <div class="card">
         <strong id="pendingCount">0</strong>
-        <span>Pendentes</span>
+        <span>Anúncios pendentes</span>
       </div>
 
       <div class="card">
         <strong id="approvedCount">0</strong>
-        <span>Aprovados</span>
+        <span>Anúncios aprovados</span>
       </div>
 
       <div class="card">
         <strong id="rejectedCount">0</strong>
-        <span>Rejeitados</span>
+        <span>Anúncios rejeitados</span>
       </div>
     </div>
 
@@ -283,6 +322,52 @@ small {
     <section class="panel">
       <h2>Anúncios rejeitados</h2>
       <div id="rejectedList">A carregar...</div>
+    </section>
+
+    <hr class="divider">
+
+    <h2>💰 Gestão de pagamentos</h2>
+
+    <div class="cards">
+      <div class="card">
+        <strong id="paymentTotalCount">0</strong>
+        <span>Total de pedidos</span>
+      </div>
+
+      <div class="card">
+        <strong id="paymentPendingCount">0</strong>
+        <span>Pedidos pendentes</span>
+      </div>
+
+      <div class="card">
+        <strong id="paymentPaidCount">0</strong>
+        <span>Pagamentos confirmados</span>
+      </div>
+
+      <div class="card">
+        <strong id="paymentRejectedCount">0</strong>
+        <span>Pedidos rejeitados</span>
+      </div>
+
+      <div class="card">
+        <strong id="paymentAmountTotal">0 Kz</strong>
+        <span>Valor total solicitado</span>
+      </div>
+    </div>
+
+    <section class="panel">
+      <h2>Pedidos de pagamento</h2>
+
+      <p>
+        Consulta os pedidos e verifica a recepção do dinheiro antes de
+        marcar um pagamento como confirmado.
+      </p>
+
+      <div id="paymentsMessage" class="message">
+        A aguardar carregamento dos pedidos...
+      </div>
+
+      <div id="paymentsList"></div>
     </section>
 
   </section>
@@ -304,7 +389,7 @@ small {
 
   if (!window.supabase) {
     $("message").textContent =
-      "Não foi possível carregar o serviço de ligação. Verifica a Internet e atualiza a página.";
+      "Não foi possível carregar o Supabase. Verifica a Internet e atualiza a página.";
     $("message").className = "message error";
     return;
   }
@@ -316,10 +401,17 @@ small {
 
   let currentUser = null;
   let busy = false;
+  let paymentsBusy = false;
 
   function showMessage(text, type = "") {
     $("message").textContent = text;
     $("message").className =
+      "message" + (type ? " " + type : "");
+  }
+
+  function showPaymentMessage(text, type = "") {
+    $("paymentsMessage").textContent = text;
+    $("paymentsMessage").className =
       "message" + (type ? " " + type : "");
   }
 
@@ -346,12 +438,53 @@ small {
     })[c]);
   }
 
+  function formatMoney(value) {
+    const amount = Number(value);
+
+    if (!Number.isFinite(amount)) {
+      return "Valor indisponível";
+    }
+
+    return amount.toLocaleString("pt-PT", {
+      maximumFractionDigits: 2
+    }) + " Kz";
+  }
+
+  function formatDate(value) {
+    if (!value) return "Data indisponível";
+
+    const date = new Date(value);
+
+    if (Number.isNaN(date.getTime())) {
+      return "Data indisponível";
+    }
+
+    return date.toLocaleString("pt-PT");
+  }
+
   function categoryName(value) {
     return ({
       emprego: "Emprego",
       mercado: "Compra e venda",
       negocio: "Negócios"
     })[value] || "Oportunidade";
+  }
+
+  function paymentMethodName(value) {
+    return ({
+      paypay: "PayPay",
+      multicaixa_express: "Multicaixa Express",
+      bank_transfer: "Transferência bancária",
+      multicaixa_reference: "Referência Multicaixa"
+    })[value] || value || "Não indicado";
+  }
+
+  function paymentStatusName(value) {
+    return ({
+      pending: "Pendente",
+      paid: "Pago — confirmado manualmente",
+      rejected: "Rejeitado"
+    })[value] || ("Estado: " + (value || "desconhecido"));
   }
 
   async function verifyAdmin(user) {
@@ -370,6 +503,7 @@ small {
 
     if (error) {
       console.error("Erro ao verificar administrador:", error);
+
       throw new Error(
         "Não foi possível consultar a tabela admins. Verifica as permissões no Supabase."
       );
@@ -389,13 +523,7 @@ small {
       <p><strong>Localização:</strong>
         ${escapeHTML(item.location || "Não indicada")}
       </p>
-      <small>Publicado:
-        ${escapeHTML(
-          item.created_at
-            ? new Date(item.created_at).toLocaleString("pt-PT")
-            : "Data indisponível"
-        )}
-      </small>
+      <small>Publicado: ${escapeHTML(formatDate(item.created_at))}</small>
       <div class="actions"></div>
     `;
 
@@ -405,12 +533,12 @@ small {
       const approve = document.createElement("button");
       approve.className = "approve";
       approve.textContent = "Aprovar";
-      approve.onclick = () => changeStatus(item.id, "approved");
+      approve.onclick = () => changeListingStatus(item.id, "approved");
 
       const reject = document.createElement("button");
       reject.className = "reject";
       reject.textContent = "Rejeitar";
-      reject.onclick = () => changeStatus(item.id, "rejected");
+      reject.onclick = () => changeListingStatus(item.id, "rejected");
 
       actions.append(approve, reject);
     }
@@ -489,7 +617,7 @@ small {
 
       showMessage(
         "Não foi possível carregar os anúncios. " +
-        (error.message || "Verifica as permissões de leitura da tabela listings."),
+        (error.message || "Verifica as permissões da tabela listings."),
         "error"
       );
 
@@ -499,7 +627,7 @@ small {
     }
   }
 
-  async function changeStatus(id, status) {
+  async function changeListingStatus(id, status) {
     if (!currentUser) {
       showMessage("Inicia sessão para continuar.", "error");
       return;
@@ -507,7 +635,9 @@ small {
 
     const action = status === "approved" ? "aprovar" : "rejeitar";
 
-    if (!confirm("Tens a certeza de que pretendes " + action + " este anúncio?")) {
+    if (!confirm(
+      "Tens a certeza de que pretendes " + action + " este anúncio?"
+    )) {
       return;
     }
 
@@ -548,7 +678,9 @@ small {
       return;
     }
 
-    if (!confirm("Tens a certeza de que pretendes eliminar este anúncio? Esta ação não pode ser desfeita.")) {
+    if (!confirm(
+      "Tens a certeza de que pretendes eliminar este anúncio? Esta ação não pode ser desfeita."
+    )) {
       return;
     }
 
@@ -583,11 +715,226 @@ small {
     }
   }
 
+  function renderPayment(item) {
+    const div = document.createElement("article");
+    div.className = "listing";
+
+    const statusClass = ({
+      pending: "badge-pending",
+      paid: "badge-paid",
+      rejected: "badge-rejected"
+    })[item.status] || "";
+
+    div.innerHTML = `
+      <span class="badge ${statusClass}">
+        ${escapeHTML(paymentStatusName(item.status))}
+      </span>
+
+      <h3>Pedido de pagamento</h3>
+
+      <p class="money">${escapeHTML(formatMoney(item.amount))}</p>
+
+      <p>
+        <strong>Método:</strong>
+        ${escapeHTML(paymentMethodName(item.payment_method))}
+      </p>
+
+      <p>
+        <strong>Descrição:</strong><br>
+        ${escapeHTML(item.description || "Sem descrição")}
+      </p>
+
+      <p>
+        <strong>Referência do pedido:</strong><br>
+        <small>${escapeHTML(item.id)}</small>
+      </p>
+
+      <p>
+        <strong>Utilizador:</strong><br>
+        <small>${escapeHTML(item.user_id || "Não indicado")}</small>
+      </p>
+
+      <small>Registado: ${escapeHTML(formatDate(item.created_at))}</small>
+
+      <div class="payment-actions"></div>
+    `;
+
+    const actions = div.querySelector(".payment-actions");
+
+    if (item.status === "pending") {
+      const markPaid = document.createElement("button");
+      markPaid.className = "paid";
+      markPaid.textContent = "Confirmar pagamento recebido";
+
+      markPaid.onclick = () => changePaymentStatus(item.id, "paid");
+
+      const reject = document.createElement("button");
+      reject.className = "reject";
+      reject.textContent = "Rejeitar pedido";
+
+      reject.onclick = () => changePaymentStatus(item.id, "rejected");
+
+      actions.append(markPaid, reject);
+
+      const warning = document.createElement("small");
+      warning.textContent =
+        "Só confirma se já verificaste a recepção do dinheiro.";
+      warning.style.display = "block";
+      warning.style.marginTop = "8px";
+
+      actions.appendChild(warning);
+    }
+
+    return div;
+  }
+
+  async function loadPayments() {
+    if (paymentsBusy) return;
+
+    paymentsBusy = true;
+    $("refreshPayments").disabled = true;
+
+    showPaymentMessage("A carregar pedidos de pagamento...");
+
+    try {
+      const { data, error } = await client
+        .from("payment_requests")
+        .select(
+          "id,amount,payment_method,status,user_id,description,created_at"
+        )
+        .order("created_at", { ascending: false })
+        .limit(500);
+
+      if (error) throw error;
+
+      const items = data || [];
+
+      const pending = items.filter(
+        item => item.status === "pending"
+      );
+
+      const paid = items.filter(
+        item => item.status === "paid"
+      );
+
+      const rejected = items.filter(
+        item => item.status === "rejected"
+      );
+
+      const totalAmount = items.reduce((sum, item) => {
+        const amount = Number(item.amount);
+        return sum + (Number.isFinite(amount) ? amount : 0);
+      }, 0);
+
+      $("paymentTotalCount").textContent = items.length;
+      $("paymentPendingCount").textContent = pending.length;
+      $("paymentPaidCount").textContent = paid.length;
+      $("paymentRejectedCount").textContent = rejected.length;
+      $("paymentAmountTotal").textContent = formatMoney(totalAmount);
+
+      const container = $("paymentsList");
+      container.replaceChildren();
+
+      if (!items.length) {
+        container.textContent = "Ainda não existem pedidos de pagamento.";
+      } else {
+        for (const item of items) {
+          container.appendChild(renderPayment(item));
+        }
+      }
+
+      showPaymentMessage(
+        "Pedidos carregados. A lista mostra até 500 pedidos recentes.",
+        "success"
+      );
+
+    } catch (error) {
+      console.error("Erro ao carregar pagamentos:", error);
+
+      $("paymentsList").textContent = "";
+
+      showPaymentMessage(
+        "Não foi possível carregar os pedidos de pagamento. " +
+        (error.message || "Verifica as permissões da tabela payment_requests."),
+        "error"
+      );
+
+    } finally {
+      paymentsBusy = false;
+      $("refreshPayments").disabled = false;
+    }
+  }
+
+  async function changePaymentStatus(id, status) {
+    if (!currentUser) {
+      showPaymentMessage("Inicia sessão para continuar.", "error");
+      return;
+    }
+
+    if (!["paid", "rejected"].includes(status)) {
+      showPaymentMessage("Estado solicitado não permitido.", "error");
+      return;
+    }
+
+    if (status === "paid") {
+      const confirmed = confirm(
+        "Confirma que verificaste a recepção real do dinheiro deste pedido? " +
+        "Só deves continuar se o valor tiver sido recebido."
+      );
+
+      if (!confirmed) return;
+    } else {
+      const confirmed = confirm(
+        "Tens a certeza de que pretendes rejeitar este pedido de pagamento?"
+      );
+
+      if (!confirmed) return;
+    }
+
+    showPaymentMessage("A atualizar o pedido de pagamento...");
+
+    try {
+      const { data, error } = await client
+        .from("payment_requests")
+        .update({ status })
+        .eq("id", id)
+        .eq("status", "pending")
+        .select("id,status");
+
+      if (error) throw error;
+
+      if (!data || data.length === 0) {
+        throw new Error(
+          "O pedido não foi atualizado. Pode já ter sido alterado ou a base de dados não permitiu a operação."
+        );
+      }
+
+      showPaymentMessage(
+        status === "paid"
+          ? "Pedido marcado como pago. Esta confirmação foi manual."
+          : "Pedido de pagamento rejeitado.",
+        "success"
+      );
+
+      await loadPayments();
+
+    } catch (error) {
+      console.error("Erro ao atualizar pagamento:", error);
+
+      showPaymentMessage(
+        "Não foi possível atualizar o pedido. " +
+        (error.message || "Verifica as permissões de administrador no Supabase."),
+        "error"
+      );
+    }
+  }
+
   $("loginForm").addEventListener("submit", async event => {
     event.preventDefault();
 
     const button = $("loginButton");
     button.disabled = true;
+
     showMessage("A iniciar sessão...");
 
     try {
@@ -609,7 +956,6 @@ small {
 
       if (!authorized) {
         await client.auth.signOut();
-
         showLogin();
 
         showMessage(
@@ -624,6 +970,7 @@ small {
       showDashboard();
 
       await loadListings();
+      await loadPayments();
 
     } catch (error) {
       console.error("Erro no início de sessão:", error);
@@ -642,6 +989,7 @@ small {
   });
 
   $("refresh").addEventListener("click", loadListings);
+  $("refreshPayments").addEventListener("click", loadPayments);
 
   $("logout").addEventListener("click", async () => {
     showMessage("A terminar sessão...");
@@ -650,10 +998,12 @@ small {
 
     currentUser = null;
     $("password").value = "";
+
     showLogin();
 
     if (error) {
       console.error("Erro ao terminar sessão:", error);
+
       showMessage(
         "A sessão foi fechada nesta página, mas ocorreu um erro ao limpar a sessão remota.",
         "error"
@@ -675,7 +1025,9 @@ small {
 
       if (!session) {
         showLogin();
-        showMessage("Entra com a conta autorizada para administrar a LUMEXI.");
+        showMessage(
+          "Entra com a conta autorizada para administrar a LUMEXI."
+        );
         return;
       }
 
@@ -697,6 +1049,7 @@ small {
       showDashboard();
 
       await loadListings();
+      await loadPayments();
 
     } catch (error) {
       console.error("Erro ao iniciar o painel:", error);
